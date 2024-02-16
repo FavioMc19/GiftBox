@@ -1,0 +1,12 @@
+name: GiftBox
+version: '${version}'
+main: net.kokoricraft.giftbox.GiftBox
+api-version: '1.19'
+authors: [Favi0ne]
+description: Small gift boxes!
+commands:
+  giftbox:
+    usage: /<command>
+    aliases:
+      - "gb"
+    description: asdaadsa
