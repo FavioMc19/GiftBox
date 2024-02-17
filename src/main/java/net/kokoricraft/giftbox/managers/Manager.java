@@ -1,8 +1,8 @@
 package net.kokoricraft.giftbox.managers;
 
 import net.kokoricraft.giftbox.GiftBox;
-import net.kokoricraft.giftbox.objects.BoxItem;
 import net.kokoricraft.giftbox.objects.BoxParticle;
+import net.kokoricraft.giftbox.objects.BoxType;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -16,55 +16,10 @@ import java.util.*;
 public class Manager {
     private final GiftBox plugin;
     private final Map<Item, BoxParticle> trait_items = new HashMap<>();
-    private final List<BoxItem> boxItems = new ArrayList<>();
-    private final Random random;
-
+    private Map<String, BoxType> boxes = new HashMap<>();
 
     public Manager(GiftBox plugin){
         this.plugin = plugin;
-        boxItems.add(new BoxItem(0.1));
-        boxItems.add(new BoxItem(1));
-        boxItems.add(new BoxItem(4));
-        boxItems.add(new BoxItem(10));
-        boxItems.add(new BoxItem(48));
-        boxItems.add(new BoxItem(50));
-        boxItems.add(new BoxItem(70));
-        this.random = new Random();
-    }
-
-    public BoxItem selectRandomItem() {
-        double totalChance = 0;
-        for (BoxItem item : boxItems) {
-            totalChance += item.getChance();
-        }
-
-        double randomNumber = random.nextDouble() * totalChance;
-
-        double cumulativeProbability = 0;
-        for (BoxItem item : boxItems) {
-            cumulativeProbability += item.getChance();
-            if (randomNumber <= cumulativeProbability) {
-                return item;
-            }
-        }
-
-        return boxItems.get(boxItems.size() - 1);
-    }
-
-    private void test(){
-        Map<Double, Integer> chances = new HashMap<>();
-
-        for(int i = 0; i < 2000; i++){
-            BoxItem boxItem = selectRandomItem();
-            int amount = chances.getOrDefault(boxItem.getChance(), 0);
-            chances.put(boxItem.getChance(), amount+1);
-        }
-
-
-        for(double c : chances.keySet()){
-            int value = chances.get(c);
-            Bukkit.broadcastMessage(c+": -> "+value);
-        }
     }
 
     public void place(Block block){
@@ -74,7 +29,6 @@ public class Manager {
     private BukkitTask trait_task;
 
     public void dropItem(ItemStack itemStack, Location location, BlockFace direction){
-        test();
         World world = location.getWorld();
         if(world == null) return;
 
@@ -123,5 +77,21 @@ public class Manager {
     private double getVelocityRandomDirection(){
         Double[] directions = new Double[]{.1, -.1};
         return directions[velocity_random.nextInt(directions.length)];
+    }
+
+    public void setBoxes(HashMap<String, BoxType> boxes){
+        this.boxes = boxes;
+    }
+
+    public void addBoxe(String name, BoxType type){
+        boxes.put(name, type);
+    }
+
+    public Collection<String> getBoxesNames(){
+        return boxes.keySet();
+    }
+
+    public BoxType getBoxType(String name) {
+        return boxes.get(name);
     }
 }

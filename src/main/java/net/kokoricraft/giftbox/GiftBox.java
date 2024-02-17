@@ -4,6 +4,7 @@ import net.kokoricraft.giftbox.commands.Commands;
 import net.kokoricraft.giftbox.listeners.PlayerListeners;
 import net.kokoricraft.giftbox.managers.AnimationManager;
 import net.kokoricraft.giftbox.managers.Manager;
+import net.kokoricraft.giftbox.managers.TypeConfigManager;
 import net.kokoricraft.giftbox.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
@@ -16,12 +17,14 @@ public final class GiftBox extends JavaPlugin {
     private Utils utils;
     private Manager manager;
     private AnimationManager animationManager;
+    private TypeConfigManager typeConfigManager;
 
     @Override
     public void onEnable() {
         // Plugin startup logic
         initClass();
         initCommands();
+        initListeners();
     }
 
     @Override
@@ -30,11 +33,13 @@ public final class GiftBox extends JavaPlugin {
     }
 
     private void initClass(){
-        this.utils = new Utils(this);
-        this.manager = new Manager(this);
-        this.animationManager = new AnimationManager(this);
+        utils = new Utils(this);
+        manager = new Manager(this);
+        animationManager = new AnimationManager(this);
         animationManager.initAnimations();
-        initListeners();
+        typeConfigManager = new TypeConfigManager(this);
+        typeConfigManager.loadTypes();
+        typeConfigManager.loadItems();
     }
 
     private void initCommands(){
@@ -57,5 +62,9 @@ public final class GiftBox extends JavaPlugin {
 
     public AnimationManager getAnimationManager() {
         return animationManager;
+    }
+
+    public TypeConfigManager getTypeConfigManager() {
+        return typeConfigManager;
     }
 }
