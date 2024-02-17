@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -42,20 +43,20 @@ public class PlayerListeners implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event){
-        Inventory inventory = event.getClickedInventory();
-        if(inventory == null) return;
+        Inventory inventory = event.getInventory();
+
+        if(event.getClickedInventory() == null) return;
 
         if(!(inventory.getHolder() instanceof EditInventory editInventory)) return;
 
-        switch (event.getSlot()){
-            case 0 ->{
-                editInventory.prevPage();
-                event.getWhoClicked().openInventory(editInventory.getInventory());
-            }
-            case 45 ->{
-                editInventory.nextPage();
-                event.getWhoClicked().openInventory(editInventory.getInventory());
-            }
-        }
+        event.setResult(Event.Result.DENY);
+        event.setCancelled(true);
+
+        editInventory.click(event.getWhoClicked(), event.getSlot(), event.getClickedInventory().equals(event.getWhoClicked().getInventory()));
+
+        Inventory newInventory = editInventory.getInventory();
+        if(Objects.equals(event.getClickedInventory(), newInventory)) return;
+
+        event.getWhoClicked().openInventory(newInventory);
     }
 }

@@ -5,6 +5,7 @@ import net.kokoricraft.giftbox.enums.BoxSkins;
 import net.kokoricraft.giftbox.guis.EditInventory;
 import net.kokoricraft.giftbox.guis.EditItemInventory;
 import net.kokoricraft.giftbox.objects.Box;
+import net.kokoricraft.giftbox.objects.BoxType;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.Command;
@@ -48,11 +49,7 @@ public class Commands implements CommandExecutor {
         }
 
         String name = arguments[1];
-        plugin.getTypeConfigManager().createType(name);
-
-        //EditInventory editInventory = new EditInventory(plugin, name);
-        EditItemInventory editInventory = new EditItemInventory(plugin, "test", null);
-        player.openInventory(editInventory.getInventory());
+        plugin.getManager().getBoxType(name).openEditInventory(player);
     }
 
     private void editCommand(CommandSender sender, String label, String[] arguments){

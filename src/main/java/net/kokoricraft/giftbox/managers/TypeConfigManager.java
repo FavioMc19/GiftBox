@@ -75,7 +75,9 @@ public class TypeConfigManager {
     }
 
     private void loadType(NekoConfig config, String name){
-        plugin.getManager().addBoxe(name, new BoxType(plugin, name));
+        BoxType boxType = new BoxType(plugin, name);
+        plugin.getManager().addBox(name, boxType);
+        boxType.updateEditInventory();
     }
 
     private void loadItems(NekoConfig config, String name){
@@ -84,7 +86,7 @@ public class TypeConfigManager {
             ConfigurationSection section = config.getConfigurationSection(stringUUID);
             UUID uuid = UUID.fromString(stringUUID);
 
-            BoxItem item = new BoxItem(uuid, section.getDouble("chance"), section.getString("color"), section.getItemStack("item"));
+            BoxItem item = new BoxItem(plugin, uuid, section.getDouble("chance"), section.getString("color"), section.getItemStack("item"));
             type.addItem(item);
         }
     }

@@ -1,32 +1,56 @@
 package net.kokoricraft.giftbox.guis;
 
+import com.google.common.collect.Lists;
 import net.kokoricraft.giftbox.GiftBox;
 import net.kokoricraft.giftbox.objects.BoxItem;
 import net.kokoricraft.giftbox.objects.BoxType;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 public class EditInventory implements InventoryHolder {
     private final GiftBox plugin;
     private final String type;
     private final List<Inventory> inventoryList = new ArrayList<>();
     private int index = 0;
+    private final List<Integer> emptySlots;
 
     public EditInventory(GiftBox plugin, String type){
         this.plugin = plugin;
         this.type = type;
         inventoryList.add(createInventory(1));
+        emptySlots = plugin.getUtils().getSlots("2-7,11-16,20-25,29-34,38-43,47-52");
     }
 
     public void setItems(){
         BoxType boxType = plugin.getManager().getBoxType(type);
+        List<BoxItem> boxItems = new ArrayList<>(boxType.getItems());
+        List<List<BoxItem>> lists = Lists.partition(boxItems, 36);
+
+        for(int i = 0; i < lists.size(); i++){
+            if(i == 0)
+                inventoryList.clear();
+
+            List<BoxItem> items = lists.get(i);
+            Inventory inventory = createInventory(lists.size());
+            inventoryList.add(inventory);
+
+            for(BoxItem item : items){
+                inventory.addItem(item.getIconItemStack());
+            }
+        }
     }
 
     private Inventory createInventory(int total){
@@ -94,5 +118,32 @@ public class EditInventory implements InventoryHolder {
     @Override
     public Inventory getInventory() {
         return inventoryList.get(index);
+    }
+
+    public void click(HumanEntity player, int slot, boolean playerInventory) {
+        ItemStack itemStack = getInventory().getItem(slot);
+        ItemStack playerItemStack = player.getInventory().getItem(slot);
+
+        BoxType boxType = plugin.getManager().getBoxType(type);
+        Bukkit.broadcastMessage("isPlayerInventory: "+playerInventory);
+
+        switch (slot){
+            case 0 -> prevPage();
+            case 45 -> nextPage();
+        }
+
+        if(!playerInventory && emptySlots.contains(slot) && (itemStack != null && !itemStack.getType().equals(Material.AIR))){
+            ItemMeta meta = itemStack.getItemMeta();
+            if(meta == null) return;
+
+            UUID uuid = UUID.fromString(Objects.requireNonNull(meta.getPersistentDataContainer().get(new NamespacedKey(plugin, "uuid"), PersistentDataType.STRING)));
+            EditItemInventory editItemInventory = new EditItemInventory(plugin, type, boxType.getItem(uuid));
+            player.openInventory(editItemInventory.getInventory());
+        }
+
+        if(playerInventory && playerItemStack != null){
+            boxType.addAndSave(new BoxItem(plugin, boxType.generateUUID(), 50, "&c", playerItemStack.clone()));
+            boxType.updateEditInventory();
+        }
     }
 }

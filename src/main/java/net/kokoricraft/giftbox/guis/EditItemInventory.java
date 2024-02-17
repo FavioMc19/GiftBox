@@ -13,13 +13,13 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class EditItemInventory implements InventoryHolder {
     private GiftBox plugin;
     private final String type;
-    private BoxItem item = new BoxItem(null, 1, "asd", null);
+    private final BoxItem item;
     private final Inventory inventory;
 
     public EditItemInventory(GiftBox plugin, String type, BoxItem item){
         this.plugin = plugin;
         this.type = type;
-        //this.item = item;
+        this.item = item;
 
         this.inventory = Bukkit.createInventory(this, InventoryType.DISPENSER, plugin.getUtils().color("&eEdit item"));
 
@@ -34,7 +34,7 @@ public class EditItemInventory implements InventoryHolder {
         inventory.setItem(5, minus);
         inventory.setItem(8, x);
         inventory.setItem(6, back);
-        inventory.setItem(0, this.item.getItemStack());
+        inventory.setItem(0, item.getItemStack());
 
         ItemStack magenta = new ItemStack(Material.MAGENTA_STAINED_GLASS_PANE);
         ItemMeta meta = magenta.getItemMeta();

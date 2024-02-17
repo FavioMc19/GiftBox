@@ -1,6 +1,9 @@
 package net.kokoricraft.giftbox.objects;
 
 import net.kokoricraft.giftbox.GiftBox;
+import net.kokoricraft.giftbox.guis.EditInventory;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.util.*;
 
@@ -9,11 +12,13 @@ public class BoxType {
     private final String name;
     private final Map<UUID, BoxItem> items = new HashMap<>();
     private final Random random;
+    private final EditInventory editInventory;
 
     public BoxType(GiftBox plugin, String name){
         this.plugin = plugin;
         this.name = name;
         this.random = new Random();
+        this.editInventory = new EditInventory(plugin, name);
     }
 
     public String getName(){
@@ -69,5 +74,18 @@ public class BoxType {
         }
 
         return boxItems.get(boxItems.size() - 1);
+    }
+
+    public void updateEditInventory(){
+        editInventory.setItems();
+    }
+
+    public void openEditInventory(Player player){
+        Bukkit.broadcastMessage("aaaaa");
+        player.openInventory(editInventory.getInventory());
+    }
+
+    public BoxItem getItem(UUID uuid) {
+        return items.get(uuid);
     }
 }

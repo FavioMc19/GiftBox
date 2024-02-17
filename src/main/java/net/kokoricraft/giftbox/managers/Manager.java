@@ -32,7 +32,6 @@ public class Manager {
         World world = location.getWorld();
         if(world == null) return;
 
-
         BoxParticle particle = new BoxParticle(Particle.REDSTONE, Color.fromBGR(new Random().nextInt(256), new Random().nextInt(256), new Random().nextInt(256)), 1f);
         Item item = world.dropItem(location, itemStack);
         trait_items.put(item, particle);
@@ -83,7 +82,7 @@ public class Manager {
         this.boxes = boxes;
     }
 
-    public void addBoxe(String name, BoxType type){
+    public void addBox(String name, BoxType type){
         boxes.put(name, type);
     }
 
