@@ -4,9 +4,12 @@ import net.kokoricraft.giftbox.GiftBox;
 import net.kokoricraft.giftbox.objects.BoxItem;
 import net.kokoricraft.giftbox.objects.BoxType;
 import net.kokoricraft.giftbox.objects.NekoConfig;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class TypeConfigManager {
@@ -15,6 +18,8 @@ public class TypeConfigManager {
     public TypeConfigManager(GiftBox plugin){
         this.plugin = plugin;
     }
+
+    public final Map<String, NekoConfig> items_config = new HashMap<>();
 
     public void loadTypes(){
         File folder = new File(plugin.getDataFolder() + "/boxes");
@@ -47,8 +52,6 @@ public class TypeConfigManager {
     public void loadItems(){
         for(String name : plugin.getManager().getBoxesNames()){
             File file = new File(plugin.getDataFolder() + "/items/"+name+".yml");
-            if(!file.exists()) continue;
-
             NekoConfig config = new NekoConfig("items/"+file.getName(), plugin);
             loadItems(config, name);
         }
@@ -61,16 +64,16 @@ public class TypeConfigManager {
 
     public void addItem(String name, BoxItem item){
         NekoConfig config = new NekoConfig("items/"+name+".yml", plugin);
-        String path = item.getUUID().toString()+".";
+        String path = "items."+item.getID()+".";
         config.set(path+"chance", item.getChance());
         config.set(path+"color", item.getColor());
         config.set(path+"item", item.getItemStack());
         config.saveConfig();
     }
 
-    public void removeItem(String name, UUID uuid){
+    public void removeItem(String name, int id){
         NekoConfig config = new NekoConfig("items/"+name+".yml", plugin);
-        config.set(uuid.toString(), null);
+        config.set("items."+id, null);
         config.saveConfig();
     }
 
@@ -81,12 +84,19 @@ public class TypeConfigManager {
     }
 
     private void loadItems(NekoConfig config, String name){
+        items_config.put(name, config);
+        Bukkit.broadcastMessage("put config "+name);
         BoxType type = plugin.getManager().getBoxType(name);
-        for(String stringUUID : config.getConfigurationSection("").getKeys(false)){
-            ConfigurationSection section = config.getConfigurationSection(stringUUID);
-            UUID uuid = UUID.fromString(stringUUID);
 
-            BoxItem item = new BoxItem(plugin, uuid, section.getDouble("chance"), section.getString("color"), section.getItemStack("item"));
+        type.setIDCounter(config.getInt("id-counter", 0));
+        if(!config.exists()) return;
+
+        for(String stringID : config.getConfigurationSection("items").getKeys(false)){
+            ConfigurationSection section = config.getConfigurationSection("items."+stringID);
+            int id = Integer.parseInt(stringID);
+
+            BoxItem item = new BoxItem(plugin, section.getDouble("chance"), section.getString("color"), section.getItemStack("item"));
+            item.setID(id);
             type.addItem(item);
         }
     }

@@ -10,9 +10,10 @@ import java.util.*;
 public class BoxType {
     private final GiftBox plugin;
     private final String name;
-    private final Map<UUID, BoxItem> items = new HashMap<>();
+    private final Map<Integer, BoxItem> items = new HashMap<>();
     private final Random random;
     private final EditInventory editInventory;
+    private int idCounter;
 
     public BoxType(GiftBox plugin, String name){
         this.plugin = plugin;
@@ -25,35 +26,35 @@ public class BoxType {
         return name;
     }
 
-    public Collection<BoxItem> getItems(){
-        return items.values();
+    public List<BoxItem> getItems(){
+        return new ArrayList<>(this.items.values());
     }
 
     public void addItem(BoxItem item){
-        items.put(item.getUUID(), item);
+        items.put(item.getID(), item);
     }
 
-    public boolean contains(UUID uuid){
-        return items.containsKey(uuid);
+    public boolean contains(int id){
+        return items.containsKey(id);
     }
 
     public void addAndSave(BoxItem item){
-        items.put(item.getUUID(), item);
+        item.setID(generateID());
+        items.put(item.getID(), item);
         plugin.getTypeConfigManager().addItem(name, item);
     }
 
-    public void removeAndSave(UUID uuid){
-        this.items.remove(uuid);
-        plugin.getTypeConfigManager().removeItem(name, uuid);
+    public void removeAndSave(int id){
+        this.items.remove(id);
+        plugin.getTypeConfigManager().removeItem(name, id);
     }
 
-    public UUID generateUUID(){
-        UUID uuid;
-       do {
-           uuid = UUID.randomUUID();
-       } while (contains(uuid));
-
-       return uuid;
+    public int generateID(){
+        idCounter++;
+        Bukkit.broadcastMessage("get config "+name);
+        NekoConfig config = plugin.getTypeConfigManager().items_config.get(name);
+        config.set("id-counter", idCounter);
+        return idCounter;
     }
 
     public BoxItem selectRandomItem() {
@@ -85,7 +86,11 @@ public class BoxType {
         player.openInventory(editInventory.getInventory());
     }
 
-    public BoxItem getItem(UUID uuid) {
-        return items.get(uuid);
+    public BoxItem getItem(int id) {
+        return items.get(id);
+    }
+
+    public void setIDCounter(int idCounter){
+        this.idCounter = idCounter;
     }
 }

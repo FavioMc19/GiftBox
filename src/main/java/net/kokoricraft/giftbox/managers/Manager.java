@@ -1,12 +1,14 @@
 package net.kokoricraft.giftbox.managers;
 
 import net.kokoricraft.giftbox.GiftBox;
+import net.kokoricraft.giftbox.guis.EditItemInventory;
 import net.kokoricraft.giftbox.objects.BoxParticle;
 import net.kokoricraft.giftbox.objects.BoxType;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
@@ -17,6 +19,7 @@ public class Manager {
     private final GiftBox plugin;
     private final Map<Item, BoxParticle> trait_items = new HashMap<>();
     private Map<String, BoxType> boxes = new HashMap<>();
+    public Map<Player, EditItemInventory> editItemInventoryMap = new HashMap<>();
 
     public Manager(GiftBox plugin){
         this.plugin = plugin;

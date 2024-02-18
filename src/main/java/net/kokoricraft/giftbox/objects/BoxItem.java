@@ -17,13 +17,12 @@ import java.util.UUID;
 public class BoxItem {
     private final GiftBox plugin;
     private final double chance;
-    private final UUID uuid;
+    private int id;
     private final String color;
     private final ItemStack itemStack;
 
-    public BoxItem(GiftBox plugin, UUID uuid, double chance, String color, ItemStack itemStack){
+    public BoxItem(GiftBox plugin, double chance, String color, ItemStack itemStack){
         this.plugin = plugin;
-        this.uuid = uuid;
         this.chance = chance;
         this.color = color;
         this.itemStack = itemStack;
@@ -33,8 +32,8 @@ public class BoxItem {
         return chance;
     }
 
-    public UUID getUUID(){
-        return uuid;
+    public int getID(){
+        return id;
     }
 
     public String getColor(){
@@ -63,8 +62,12 @@ public class BoxItem {
 
         meta.setLore(lore);
         PersistentDataContainer data = meta.getPersistentDataContainer();
-        data.set(new NamespacedKey(plugin, "uuid"), PersistentDataType.STRING, uuid.toString());
+        data.set(new NamespacedKey(plugin, "id"), PersistentDataType.INTEGER, id);
         itemStack.setItemMeta(meta);
         return itemStack;
+    }
+
+    public void setID(int id){
+        this.id = id;
     }
 }

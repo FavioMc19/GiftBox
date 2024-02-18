@@ -2,8 +2,12 @@ package net.kokoricraft.giftbox.guis;
 
 import net.kokoricraft.giftbox.GiftBox;
 import net.kokoricraft.giftbox.objects.BoxItem;
+import net.kokoricraft.giftbox.objects.BoxType;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -48,8 +52,14 @@ public class EditItemInventory implements InventoryHolder {
         }
     }
 
-    public void click(int slot){
-
+    public void click(HumanEntity player, int slot){
+        switch (slot){
+            case 6 ->{
+                BoxType boxType = plugin.getManager().getBoxType(type);
+                boxType.openEditInventory((Player) player);
+            }
+        }
+        ((Player)player).playSound(player, Sound.UI_BUTTON_CLICK, 0.5f, 1f);
     }
 
     public Inventory getInventory(){

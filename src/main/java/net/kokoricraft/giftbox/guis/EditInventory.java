@@ -7,6 +7,7 @@ import net.kokoricraft.giftbox.objects.BoxType;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Sound;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -36,7 +37,7 @@ public class EditInventory implements InventoryHolder {
 
     public void setItems(){
         BoxType boxType = plugin.getManager().getBoxType(type);
-        List<BoxItem> boxItems = new ArrayList<>(boxType.getItems());
+        List<BoxItem> boxItems = boxType.getItems();
         List<List<BoxItem>> lists = Lists.partition(boxItems, 36);
 
         for(int i = 0; i < lists.size(); i++){
@@ -46,9 +47,13 @@ public class EditInventory implements InventoryHolder {
             List<BoxItem> items = lists.get(i);
             Inventory inventory = createInventory(lists.size());
             inventoryList.add(inventory);
+            if(items.isEmpty()) break;
 
-            for(BoxItem item : items){
-                inventory.addItem(item.getIconItemStack());
+            int counter = 0;
+            for(int slot : emptySlots){
+                if(items.size() <= counter) break;
+                inventory.setItem(slot, items.get(counter).getIconItemStack());
+                counter++;
             }
         }
     }
@@ -56,8 +61,8 @@ public class EditInventory implements InventoryHolder {
     private Inventory createInventory(int total){
         Inventory inventory = Bukkit.createInventory(this, 54, type+" "+(inventoryList.size()+1)+"/"+total);
 
-        boolean up = true;//index > 0;
-        boolean down = true;//total > inventoryList.size() +1;
+        boolean up = !inventoryList.isEmpty();
+        boolean down = total > inventoryList.size() +1;
 
         for(int slot : plugin.getUtils().getSlots("0, 9, 18, 27, 36, 45")){
             ItemStack itemStack = plugin.getUtils().getHeadFromURLDirect("a19d64612ba8d1c02ee270d84519ad0cd73175bc45e7dda3f639686b2ce64596");
@@ -125,24 +130,26 @@ public class EditInventory implements InventoryHolder {
         ItemStack playerItemStack = player.getInventory().getItem(slot);
 
         BoxType boxType = plugin.getManager().getBoxType(type);
-        Bukkit.broadcastMessage("isPlayerInventory: "+playerInventory);
 
         switch (slot){
             case 0 -> prevPage();
             case 45 -> nextPage();
         }
 
+        ((Player)player).playSound(player, Sound.UI_BUTTON_CLICK, 0.5f, 1f);
+
         if(!playerInventory && emptySlots.contains(slot) && (itemStack != null && !itemStack.getType().equals(Material.AIR))){
             ItemMeta meta = itemStack.getItemMeta();
             if(meta == null) return;
 
-            UUID uuid = UUID.fromString(Objects.requireNonNull(meta.getPersistentDataContainer().get(new NamespacedKey(plugin, "uuid"), PersistentDataType.STRING)));
-            EditItemInventory editItemInventory = new EditItemInventory(plugin, type, boxType.getItem(uuid));
+            int id = Objects.requireNonNull(meta.getPersistentDataContainer().get(new NamespacedKey(plugin, "id"), PersistentDataType.INTEGER));
+            EditItemInventory editItemInventory = new EditItemInventory(plugin, type, boxType.getItem(id));
+            plugin.getManager().editItemInventoryMap.put((Player) player, editItemInventory);
             player.openInventory(editItemInventory.getInventory());
         }
 
         if(playerInventory && playerItemStack != null){
-            boxType.addAndSave(new BoxItem(plugin, boxType.generateUUID(), 50, "&c", playerItemStack.clone()));
+            boxType.addAndSave(new BoxItem(plugin, 50, "&c", playerItemStack.clone()));
             boxType.updateEditInventory();
         }
     }

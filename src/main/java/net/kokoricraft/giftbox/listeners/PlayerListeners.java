@@ -3,6 +3,7 @@ package net.kokoricraft.giftbox.listeners;
 import net.kokoricraft.giftbox.GiftBox;
 import net.kokoricraft.giftbox.enums.BoxSkins;
 import net.kokoricraft.giftbox.guis.EditInventory;
+import net.kokoricraft.giftbox.guis.EditItemInventory;
 import net.kokoricraft.giftbox.objects.Box;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -44,19 +45,30 @@ public class PlayerListeners implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event){
         Inventory inventory = event.getInventory();
-
         if(event.getClickedInventory() == null) return;
 
-        if(!(inventory.getHolder() instanceof EditInventory editInventory)) return;
+        Player player = (Player) event.getWhoClicked();
 
-        event.setResult(Event.Result.DENY);
-        event.setCancelled(true);
+        if(inventory.getHolder() instanceof EditInventory editInventory){
+            event.setResult(Event.Result.DENY);
+            event.setCancelled(true);
 
-        editInventory.click(event.getWhoClicked(), event.getSlot(), event.getClickedInventory().equals(event.getWhoClicked().getInventory()));
+            editInventory.click(event.getWhoClicked(), event.getSlot(), event.getClickedInventory().equals(event.getWhoClicked().getInventory()));
 
-        Inventory newInventory = editInventory.getInventory();
-        if(Objects.equals(event.getClickedInventory(), newInventory)) return;
+            Inventory newInventory = editInventory.getInventory();
+            if(Objects.equals(event.getClickedInventory(), newInventory)) return;
 
-        event.getWhoClicked().openInventory(newInventory);
+            event.getWhoClicked().openInventory(newInventory);
+            return;
+        }
+
+        EditItemInventory editItemInventory = plugin.getManager().editItemInventoryMap.get(player);
+
+        if(editItemInventory != null && editItemInventory.getInventory().equals(event.getClickedInventory())){
+            event.setResult(Event.Result.DENY);
+            event.setCancelled(true);
+
+            editItemInventory.click(event.getWhoClicked(), event.getRawSlot());
+        }
     }
 }
