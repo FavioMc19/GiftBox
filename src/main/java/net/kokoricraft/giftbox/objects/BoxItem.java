@@ -6,19 +6,16 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataHolder;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class BoxItem {
     private final GiftBox plugin;
-    private final double chance;
+    private double chance;
     private int id;
-    private final String color;
+    private String color;
     private final ItemStack itemStack;
 
     public BoxItem(GiftBox plugin, double chance, String color, ItemStack itemStack){
@@ -57,8 +54,10 @@ public class BoxItem {
             lore = new ArrayList<>();
 
         lore.add("");
-        lore.add(plugin.getUtils().color("&echance: &f"+chance));
-        lore.add(plugin.getUtils().color("&ecolor: "+color+"■"));
+        lore.add(plugin.getUtils().color("&f&m---------------------------"));
+        lore.add(plugin.getUtils().color("            &eChance: &f"+chance+"%"));
+        lore.add(plugin.getUtils().color("                &eColor: "+color+"■"));
+        lore.add(plugin.getUtils().color("&f&m---------------------------"));
 
         meta.setLore(lore);
         PersistentDataContainer data = meta.getPersistentDataContainer();
@@ -69,5 +68,17 @@ public class BoxItem {
 
     public void setID(int id){
         this.id = id;
+    }
+
+    public void setChance(double chance){
+        this.chance = chance;
+    }
+
+    public void increaseChance(double value){
+        setChance(chance + value);
+    }
+
+    public void setColor(String color){
+        this.color = color;
     }
 }

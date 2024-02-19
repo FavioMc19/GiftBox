@@ -63,12 +63,16 @@ public class TypeConfigManager {
     }
 
     public void addItem(String name, BoxItem item){
-        NekoConfig config = new NekoConfig("items/"+name+".yml", plugin);
+        NekoConfig config = items_config.get(name);
         String path = "items."+item.getID()+".";
         config.set(path+"chance", item.getChance());
         config.set(path+"color", item.getColor());
         config.set(path+"item", item.getItemStack());
         config.saveConfig();
+    }
+
+    public void updateItem(String name, BoxItem item) {
+        addItem(name, item);
     }
 
     public void removeItem(String name, int id){
@@ -85,7 +89,6 @@ public class TypeConfigManager {
 
     private void loadItems(NekoConfig config, String name){
         items_config.put(name, config);
-        Bukkit.broadcastMessage("put config "+name);
         BoxType type = plugin.getManager().getBoxType(name);
 
         type.setIDCounter(config.getInt("id-counter", 0));
@@ -99,5 +102,6 @@ public class TypeConfigManager {
             item.setID(id);
             type.addItem(item);
         }
+        type.updateEditInventory();
     }
 }

@@ -11,7 +11,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
 import org.joml.AxisAngle4f;
-import org.joml.Vector3f;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,19 +22,19 @@ public class Box {
     private Map<BoxPart, ItemStack> textures = new HashMap<>();
     private BoxSkins skin;
 
-    private final String key;
+    private final String name;
     private final Location location;
     private final GiftBox plugin;
     private final Random random;
-    public Box(String key, Location location, GiftBox plugin){
+    public Box(String name, Location location, GiftBox plugin){
         this.random = new Random();
-        this.key = key;
+        this.name = name;
         this.location = new Location(location.getWorld(), location.getBlockX()+.5, location.getBlockY()+.3, location.getBlockZ()+.5);
         this.plugin = plugin;
     }
 
-    public String getKey(){
-        return key;
+    public String getName(){
+        return name;
     }
 
     public void place(BlockFace direction){
@@ -76,7 +75,9 @@ public class Box {
 
         plugin.getAnimationManager().play("default", body, lid);
 
-        Bukkit.getScheduler().runTaskLater(plugin, () -> plugin.getManager().dropItem(new ItemStack(Material.DIAMOND, 1), location, direction), 105);
+        BoxItem boxItem = plugin.getManager().getBoxType(name).selectRandomItem();
+
+        Bukkit.getScheduler().runTaskLater(plugin, () -> plugin.getManager().dropItem(boxItem, location, direction), 105);
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             BoxParticle particle = new BoxParticle(Particle.DRAGON_BREATH, 0.2, 8, 0, 0.3, 0);
             particle.play(location);

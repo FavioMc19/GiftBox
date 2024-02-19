@@ -44,14 +44,18 @@ public class BoxType {
         plugin.getTypeConfigManager().addItem(name, item);
     }
 
+    public void update(BoxItem item){
+        plugin.getTypeConfigManager().updateItem(name, item);
+    }
+
     public void removeAndSave(int id){
         this.items.remove(id);
         plugin.getTypeConfigManager().removeItem(name, id);
+        updateEditInventory();
     }
 
     public int generateID(){
         idCounter++;
-        Bukkit.broadcastMessage("get config "+name);
         NekoConfig config = plugin.getTypeConfigManager().items_config.get(name);
         config.set("id-counter", idCounter);
         return idCounter;
@@ -82,7 +86,6 @@ public class BoxType {
     }
 
     public void openEditInventory(Player player){
-        Bukkit.broadcastMessage("aaaaa");
         player.openInventory(editInventory.getInventory());
     }
 
@@ -92,5 +95,9 @@ public class BoxType {
 
     public void setIDCounter(int idCounter){
         this.idCounter = idCounter;
+    }
+
+    public EditInventory getInventory() {
+        return editInventory;
     }
 }

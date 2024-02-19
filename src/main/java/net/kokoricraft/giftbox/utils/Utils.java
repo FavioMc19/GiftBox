@@ -3,6 +3,7 @@ package net.kokoricraft.giftbox.utils;
 import net.kokoricraft.giftbox.GiftBox;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.ItemStack;
@@ -71,5 +72,26 @@ public class Utils {
         }
 
         return endSlots;
+    }
+
+    public Color getColor(String text){
+        text = parsetVanillaColor(text);
+
+        java.awt.Color javaCOlor = java.awt.Color.decode(text);
+        return Color.fromRGB(javaCOlor.getRed(), javaCOlor.getGreen(), javaCOlor.getBlue());
+    }
+
+    public String parsetVanillaColor(String text){
+        String[] colors = new String[] {"&0", "&1", "&2", "&3", "&4", "&5", "&6", "&7", "&8", "&9", "&a", "&b", "&c", "&d", "&e", "&f"};
+        String[] hexs = new String[] {"#00000", "#0000aa", "#00aa00", "#00aaaa", "#aa0000", "#aa00aa", "#ffaa00", "#aaaaaa",
+                "#555555", "#5555ff", "#55ff55", "#55ffff", "#ff5555", "#ff55ff", "#ffff55", "#ffffff"};
+
+        for(int i = 0; i < colors.length; i++){
+            String color = colors[i];
+            String hex = hexs[i];
+
+            if(text.contains(color)) text = text.replace(color, hex);
+        }
+        return text;
     }
 }

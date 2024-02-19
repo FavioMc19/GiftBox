@@ -4,10 +4,7 @@ import com.google.common.collect.Lists;
 import net.kokoricraft.giftbox.GiftBox;
 import net.kokoricraft.giftbox.objects.BoxItem;
 import net.kokoricraft.giftbox.objects.BoxType;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -16,10 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 public class EditInventory implements InventoryHolder {
     private final GiftBox plugin;
@@ -27,6 +21,7 @@ public class EditInventory implements InventoryHolder {
     private final List<Inventory> inventoryList = new ArrayList<>();
     private int index = 0;
     private final List<Integer> emptySlots;
+    private final Map<Integer, Integer[]> assigned_items = new HashMap<>();
 
     public EditInventory(GiftBox plugin, String type){
         this.plugin = plugin;
@@ -36,14 +31,15 @@ public class EditInventory implements InventoryHolder {
     }
 
     public void setItems(){
+        assigned_items.clear();
         BoxType boxType = plugin.getManager().getBoxType(type);
         List<BoxItem> boxItems = boxType.getItems();
+        boxItems.sort(new ItemComparator());
         List<List<BoxItem>> lists = Lists.partition(boxItems, 36);
+        if(!lists.isEmpty())
+            inventoryList.clear();
 
         for(int i = 0; i < lists.size(); i++){
-            if(i == 0)
-                inventoryList.clear();
-
             List<BoxItem> items = lists.get(i);
             Inventory inventory = createInventory(lists.size());
             inventoryList.add(inventory);
@@ -52,7 +48,9 @@ public class EditInventory implements InventoryHolder {
             int counter = 0;
             for(int slot : emptySlots){
                 if(items.size() <= counter) break;
-                inventory.setItem(slot, items.get(counter).getIconItemStack());
+                BoxItem boxItem = items.get(counter);
+                inventory.setItem(slot, boxItem.getIconItemStack());
+                assigned_items.put(boxItem.getID(), new Integer[]{i, slot});
                 counter++;
             }
         }
@@ -151,6 +149,22 @@ public class EditInventory implements InventoryHolder {
         if(playerInventory && playerItemStack != null){
             boxType.addAndSave(new BoxItem(plugin, 50, "&c", playerItemStack.clone()));
             boxType.updateEditInventory();
+        }
+    }
+
+    public void updateItem(BoxItem boxItem){
+        Integer[] assigned = assigned_items.get(boxItem.getID());
+        if(assigned == null) return;
+
+        Inventory inventory = inventoryList.get(assigned[0]);
+        int slot = assigned[1];
+        inventory.setItem(slot, boxItem.getIconItemStack());
+    }
+
+    private static class ItemComparator implements Comparator<BoxItem>{
+        @Override
+        public int compare(BoxItem o1, BoxItem o2) {
+            return o1.getID() - o2.getID();
         }
     }
 }

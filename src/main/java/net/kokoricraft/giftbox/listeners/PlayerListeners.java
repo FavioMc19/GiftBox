@@ -15,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -68,7 +69,17 @@ public class PlayerListeners implements Listener {
             event.setResult(Event.Result.DENY);
             event.setCancelled(true);
 
-            editItemInventory.click(event.getWhoClicked(), event.getRawSlot());
+            editItemInventory.click(event.getWhoClicked(), event.getRawSlot(), event.isRightClick());
         }
+    }
+
+    @EventHandler
+    public void onPlayerChat(AsyncPlayerChatEvent event){
+        Player player = event.getPlayer();
+
+        if(!plugin.getManager().isEditingColor(player)) return;
+        EditItemInventory editItemInventory = plugin.getManager().editItemInventoryMap.get(player);
+        Bukkit.getScheduler().runTask(plugin, () -> editItemInventory.setItemColor(player, event.getMessage()));
+        event.setCancelled(true);
     }
 }
