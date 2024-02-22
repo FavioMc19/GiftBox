@@ -5,8 +5,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
 
 public class NekoConfig {
@@ -159,5 +158,31 @@ public class NekoConfig {
 
 	public String getPath() {
 		return configFile.getPath();
+	}
+
+	public static void saveFile(String from, String to, GiftBox plugin){
+		InputStream inputStream = plugin.getResource(from);
+		if (inputStream == null)
+			return;
+
+		File outFile = new File(to);
+
+		if(outFile.exists())
+			return;
+
+		streamToFile(inputStream, outFile);
+	}
+
+	public static void streamToFile(InputStream inputStream, File outFile){
+		try{
+			OutputStream outputStream = new FileOutputStream(outFile);
+			byte[] buffer = new byte[1024];
+			int length;
+			while ((length = inputStream.read(buffer)) > 0) {
+				outputStream.write(buffer, 0, length);
+			}
+			outputStream.close();
+			inputStream.close();
+		}catch (Exception ignored){}
 	}
 }

@@ -4,10 +4,11 @@ import net.kokoricraft.giftbox.GiftBox;
 import net.kokoricraft.giftbox.objects.BoxItem;
 import net.kokoricraft.giftbox.objects.BoxType;
 import net.kokoricraft.giftbox.objects.NekoConfig;
+import net.kokoricraft.giftbox.objects.NekoItem;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 
-import java.io.File;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -58,9 +59,32 @@ public class TypeConfigManager {
     }
 
     public void createType(String name){
+        NekoConfig.saveFile("default-box.yml", plugin.getDataFolder() + "/boxes/" + name + ".yml", plugin);
         NekoConfig config = new NekoConfig("boxes/"+name+".yml", plugin);
-        config.saveConfig();
+
+        NekoItem item = new NekoItem(plugin, name, config.getConfigurationSection("item"));
+        BoxType boxType = plugin.getManager().getBoxType(name);
+        boxType.setItem(item);
+        boxType.setSkin(config.getString("skin"), "create type"+name);
     }
+
+//    private void genereDefaultFile(String name){
+//        InputStream inputStream = plugin.getResource("default-box.yml");
+//        if (inputStream == null) {
+//            plugin.getLogger().warning("No se pudo encontrar el archivo default-box.yml en el jar.");
+//            return;
+//        }
+//
+//        File outFile = new File(plugin.getDataFolder() + "/boxes/" + name + ".yml");
+//
+//        if(outFile.exists()) {
+//            plugin.getLogger().warning("Ya existe un archivo con el nombre " + name + ".yml en la carpeta de cajas.");
+//            return;
+//        }
+//
+//        NekoConfig.streamToFile(inputStream, outFile);
+//        plugin.getLogger().info("Se ha creado el archivo " + name + ".yml en la carpeta de cajas.");
+//    }
 
     public void addItem(String name, BoxItem item){
         NekoConfig config = items_config.get(name);
@@ -85,6 +109,15 @@ public class TypeConfigManager {
         BoxType boxType = new BoxType(plugin, name);
         plugin.getManager().addBox(name, boxType);
         boxType.updateEditInventory();
+
+        if(config.contains("item"))
+            boxType.setItem(new NekoItem(plugin, name, config.getConfigurationSection("item")));
+
+        if(config.contains("skin"))
+            boxType.setSkin(config.getString("skin"), "load type "+name+ "path: "+config.getPath());
+
+        if(config.contains("default_item_color"))
+            boxType.setDefaultItemColor(config.getString("default_item_color"));
     }
 
     private void loadItems(NekoConfig config, String name){

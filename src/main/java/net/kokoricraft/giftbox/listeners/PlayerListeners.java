@@ -5,6 +5,8 @@ import net.kokoricraft.giftbox.enums.BoxSkins;
 import net.kokoricraft.giftbox.guis.EditInventory;
 import net.kokoricraft.giftbox.guis.EditItemInventory;
 import net.kokoricraft.giftbox.objects.Box;
+import net.kokoricraft.giftbox.objects.BoxType;
+import net.kokoricraft.giftbox.objects.NekoItem;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -35,12 +37,20 @@ public class PlayerListeners implements Listener {
         if(!event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || !event.getBlockFace().equals(BlockFace.UP)) return;
         ItemStack itemStack = event.getItem();
 
-        if(itemStack == null || !itemStack.getType().equals(Material.AMETHYST_SHARD)) return;
+        if(itemStack == null || itemStack.getType().equals(Material.AIR)) return;
         Block block = Objects.requireNonNull(event.getClickedBlock()).getRelative(BlockFace.UP);
 
-        Box box = new Box("test", block.getLocation(), plugin);
-        box.setSkin(BoxSkins.DEFAULT);
+        String name = NekoItem.getGiftBoxID(itemStack);
+        if(name == null) return;
+
+        BoxType boxType = plugin.getManager().getBoxType(name);
+        if(boxType == null) return;
+
+        Box box = new Box(name, block.getLocation(), plugin);
+
+        box.setSkin(boxType.getSkin());
         box.place(event.getPlayer().getFacing().getOppositeFace());
+        event.setCancelled(true);
     }
 
     @EventHandler

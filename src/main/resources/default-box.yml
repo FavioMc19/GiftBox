@@ -1,0 +1,23 @@
+# "GiftBox" item. This item serves as the itemized version of the box.
+# You can obtain them using the command /giftbox give <giftbox type>.
+item:
+  name: "&eMyBox"
+  material: AMETHYST_SHARD
+  lore:
+    - "&aLine 1"
+    - "&bLine 2"
+  custom_model_data: 0
+
+# This is the default color of the particle that each item will have.
+# You can change it specifically for each item in the item configuration in /giftbox edit <giftbox type>.
+default_item_color: "&7"
+
+# This is the skin that the box will have. You can create custom skins in the skins folder.
+# Default skins: [normal, rare, epic].
+skin: "normal"
+
+# Here you can activate the requirement for players to use a specific command in order to use this box.
+# You can change the permission as you wish.
+permissions:
+  enabled: false
+  permission: "giftbox.box.use.MyBox"

@@ -1,6 +1,7 @@
 package net.kokoricraft.giftbox.objects;
 
 import net.kokoricraft.giftbox.GiftBox;
+import net.kokoricraft.giftbox.enums.BoxSkins;
 import net.kokoricraft.giftbox.guis.EditInventory;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -14,6 +15,9 @@ public class BoxType {
     private final Random random;
     private final EditInventory editInventory;
     private int idCounter;
+    private NekoItem item;
+    private BoxSkins skin;
+    private String defaultItemColor;
 
     public BoxType(GiftBox plugin, String name){
         this.plugin = plugin;
@@ -57,6 +61,11 @@ public class BoxType {
     public int generateID(){
         idCounter++;
         NekoConfig config = plugin.getTypeConfigManager().items_config.get(name);
+        if(config == null){
+            config = new NekoConfig("items/"+name+".yml", plugin);
+            plugin.getTypeConfigManager().items_config.put(name, config);
+        }
+
         config.set("id-counter", idCounter);
         return idCounter;
     }
@@ -99,5 +108,35 @@ public class BoxType {
 
     public EditInventory getInventory() {
         return editInventory;
+    }
+
+    public void setItem(NekoItem item) {
+        this.item = item;
+    }
+
+    public NekoItem getItem(){
+        return item;
+    }
+
+    public void setSkin(String skin, String reason) {
+        plugin.getLogger().severe("skin: "+skin+" reason:"+reason);
+        if(skin == null) {
+            this.skin = BoxSkins.DEFAULT;
+            return;
+        }
+
+        this.skin = BoxSkins.valueOf(skin.toUpperCase());
+    }
+
+    public BoxSkins getSkin(){
+        return skin;
+    }
+
+    public void setDefaultItemColor(String defaultItemColor) {
+        this.defaultItemColor = defaultItemColor;
+    }
+
+    public String getDefaultItemColor(){
+        return defaultItemColor;
     }
 }
