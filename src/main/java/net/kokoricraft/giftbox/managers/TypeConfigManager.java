@@ -5,13 +5,11 @@ import net.kokoricraft.giftbox.objects.BoxItem;
 import net.kokoricraft.giftbox.objects.BoxType;
 import net.kokoricraft.giftbox.objects.NekoConfig;
 import net.kokoricraft.giftbox.objects.NekoItem;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public class TypeConfigManager {
     private final GiftBox plugin;
@@ -25,26 +23,25 @@ public class TypeConfigManager {
     public void loadTypes(){
         File folder = new File(plugin.getDataFolder() + "/boxes");
 
-        if(!folder.exists())
-            folder.mkdirs();
-
-        File[] files = folder.listFiles();
-
-        if(files == null) return;
-
         int count = 0;
 
-        for(File file : files){
-            if(file.isDirectory())
-                continue;
+        if(folder.exists()){
+            File[] files = folder.listFiles();
 
-            if(!file.getName().toLowerCase().endsWith(".yml"))
-                continue;
+            if(files == null) return;
 
-            NekoConfig config = new NekoConfig("boxes/"+file.getName(), plugin);
+            for(File file : files){
+                if(file.isDirectory())
+                    continue;
 
-            loadType(config, file.getName().replaceAll(".yml", ""));
-            count++;
+                if(!file.getName().toLowerCase().endsWith(".yml"))
+                    continue;
+
+                NekoConfig config = new NekoConfig("boxes/"+file.getName(), plugin);
+
+                loadType(config, file.getName().replaceAll(".yml", ""));
+                count++;
+            }
         }
 
         plugin.getLogger().info(count+" GiftBoxes loaded");
@@ -66,25 +63,9 @@ public class TypeConfigManager {
         BoxType boxType = plugin.getManager().getBoxType(name);
         boxType.setItem(item);
         boxType.setSkin(config.getString("skin"), "create type"+name);
+        boxType.setDefaultItemColor(config.getString("default_item_color"));
+        boxType.setPermissions(config.getConfigurationSection("permissions"));
     }
-
-//    private void genereDefaultFile(String name){
-//        InputStream inputStream = plugin.getResource("default-box.yml");
-//        if (inputStream == null) {
-//            plugin.getLogger().warning("No se pudo encontrar el archivo default-box.yml en el jar.");
-//            return;
-//        }
-//
-//        File outFile = new File(plugin.getDataFolder() + "/boxes/" + name + ".yml");
-//
-//        if(outFile.exists()) {
-//            plugin.getLogger().warning("Ya existe un archivo con el nombre " + name + ".yml en la carpeta de cajas.");
-//            return;
-//        }
-//
-//        NekoConfig.streamToFile(inputStream, outFile);
-//        plugin.getLogger().info("Se ha creado el archivo " + name + ".yml en la carpeta de cajas.");
-//    }
 
     public void addItem(String name, BoxItem item){
         NekoConfig config = items_config.get(name);
@@ -106,18 +87,25 @@ public class TypeConfigManager {
     }
 
     private void loadType(NekoConfig config, String name){
-        BoxType boxType = new BoxType(plugin, name);
-        plugin.getManager().addBox(name, boxType);
-        boxType.updateEditInventory();
+        try{
+            BoxType boxType = new BoxType(plugin, name);
+            plugin.getManager().addBox(name, boxType);
+            boxType.updateEditInventory();
 
-        if(config.contains("item"))
-            boxType.setItem(new NekoItem(plugin, name, config.getConfigurationSection("item")));
+            if(config.contains("item"))
+                boxType.setItem(new NekoItem(plugin, name, config.getConfigurationSection("item")));
 
-        if(config.contains("skin"))
-            boxType.setSkin(config.getString("skin"), "load type "+name+ "path: "+config.getPath());
+            if(config.contains("skin"))
+                boxType.setSkin(config.getString("skin"), "load type "+name+ "path: "+config.getPath());
 
-        if(config.contains("default_item_color"))
-            boxType.setDefaultItemColor(config.getString("default_item_color"));
+            if(config.contains("default_item_color"))
+                boxType.setDefaultItemColor(config.getString("default_item_color"));
+
+            if(config.contains("permissions"))
+                boxType.setPermissions(config.getConfigurationSection("permissions"));
+        }catch (Exception exception){
+            exception.printStackTrace();
+        }
     }
 
     private void loadItems(NekoConfig config, String name){

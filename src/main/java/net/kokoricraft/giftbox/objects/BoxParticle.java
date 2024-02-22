@@ -4,9 +4,11 @@ import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 public class BoxParticle {
@@ -18,6 +20,7 @@ public class BoxParticle {
     private double z_relative = 0;
     private Color color;
     private int counter = 0;
+    private Location from;
 
     public BoxParticle(Particle particle, double range, int size){
         this.particle = particle;
@@ -46,6 +49,14 @@ public class BoxParticle {
         if(color != null){
             Particle.DustOptions dustOptions = new Particle.DustOptions(color, size);
             world.spawnParticle(Particle.REDSTONE, center, 0, dustOptions);
+            if(from != null){
+                for(Location location : getIntermediateLocations(center, from, 0.05)){
+                    world.spawnParticle(Particle.REDSTONE, location, 0, dustOptions);
+                }
+                from = center;
+            }else{
+                from = center;
+            }
             return;
         }
         getLocationsInRange(center.clone().add(x_relative, y_relative, z_relative)).forEach(location -> world.spawnParticle(particle, location, 0));
@@ -72,4 +83,22 @@ public class BoxParticle {
         return counter;
     }
 
+    private List<Location> getIntermediateLocations(Location loc1, Location loc2, double distance) {
+        List<Location> intermediateLocations = new ArrayList<>();
+
+        Vector vectorBetween = loc2.toVector().subtract(loc1.toVector());
+        double totalDistance = vectorBetween.length();
+        vectorBetween.normalize();
+
+        double currentDistance = distance;
+
+        while (currentDistance < totalDistance) {
+            Vector intermediateVector = loc1.toVector().clone().add(vectorBetween.clone().multiply(currentDistance));
+            Location intermediateLocation = intermediateVector.toLocation(Objects.requireNonNull(loc1.getWorld()));
+            intermediateLocations.add(intermediateLocation);
+            currentDistance += distance;
+        }
+
+        return intermediateLocations;
+    }
 }

@@ -45,12 +45,16 @@ public class PlayerListeners implements Listener {
 
         BoxType boxType = plugin.getManager().getBoxType(name);
         if(boxType == null) return;
-
-        Box box = new Box(name, block.getLocation(), plugin);
-
-        box.setSkin(boxType.getSkin());
-        box.place(event.getPlayer().getFacing().getOppositeFace());
         event.setCancelled(true);
+
+        Player player = event.getPlayer();
+
+        if(boxType.isNeedPermission() && !player.hasPermission(boxType.getPermission())){
+            plugin.getUtils().sendMessage(player, "&cNecesitas permiso para usar esta gift box");
+            return;
+        }
+
+        plugin.getManager().place(block, boxType, player.getFacing().getOppositeFace());
     }
 
     @EventHandler

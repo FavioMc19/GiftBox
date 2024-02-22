@@ -4,6 +4,7 @@ import net.kokoricraft.giftbox.GiftBox;
 import net.kokoricraft.giftbox.enums.BoxSkins;
 import net.kokoricraft.giftbox.guis.EditInventory;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -18,12 +19,15 @@ public class BoxType {
     private NekoItem item;
     private BoxSkins skin;
     private String defaultItemColor;
+    private boolean permissions_enabled = false;
+    private String permissions_permission;
 
     public BoxType(GiftBox plugin, String name){
         this.plugin = plugin;
         this.name = name;
         this.random = new Random();
         this.editInventory = new EditInventory(plugin, name);
+        permissions_permission = "giftbox.box.use."+name;
     }
 
     public String getName(){
@@ -86,6 +90,7 @@ public class BoxType {
                 return item;
             }
         }
+        if(boxItems.isEmpty()) return null;
 
         return boxItems.get(boxItems.size() - 1);
     }
@@ -138,5 +143,20 @@ public class BoxType {
 
     public String getDefaultItemColor(){
         return defaultItemColor;
+    }
+
+    public void setPermissions(ConfigurationSection permissions) {
+        permissions_enabled = permissions.getBoolean("enabled");
+
+        if(permissions.contains("permission"))
+            permissions_permission = permissions.getString("permission");
+    }
+
+    public boolean isNeedPermission(){
+        return permissions_enabled;
+    }
+
+    public String getPermission(){
+        return permissions_permission;
     }
 }

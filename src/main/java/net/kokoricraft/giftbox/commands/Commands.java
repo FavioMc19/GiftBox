@@ -1,18 +1,22 @@
 package net.kokoricraft.giftbox.commands;
 
 import net.kokoricraft.giftbox.GiftBox;
+import net.kokoricraft.giftbox.enums.BoxSkins;
 import net.kokoricraft.giftbox.objects.BoxType;
 import net.kokoricraft.giftbox.objects.NekoItem;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Display;
+import org.bukkit.entity.ItemDisplay;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.TextDisplay;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Transformation;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Commands implements CommandExecutor {
 
@@ -120,32 +124,43 @@ public class Commands implements CommandExecutor {
     }
 
     private void testCommand(CommandSender sender, String label, String[] arguments) {
-        Player player = (Player)sender;
-        TextDisplay display = player.getWorld().spawn(player.getLocation(), TextDisplay.class);
-        display.setText("Test awa a");
-        display.setBillboard(Display.Billboard.CENTER);
-        Transformation transformation = display.getTransformation();
-        transformation.getTranslation().set(1.3, 0.3, 0);
-        display.setTransformation(transformation);
+        List<Display> displayList = new ArrayList<>();
 
-        player.addPassenger(display);
+        Player player = (Player)sender;
+        Location location = player.getLocation().getBlock().getLocation().clone();
+        location.add(.5, 0.3, .5);
+
         player.sendMessage("spawned");
 
+        double size = 0.8;
 
-        BukkitTask task = Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
-            @Override
-            public void run() {
-                display.setRotation(player.getLocation().getYaw(), 0);
-            }
-        }, 0, 0);
+        ItemDisplay body = location.getWorld().spawn(location, ItemDisplay.class, display ->{
+            ItemStack item = plugin.getUtils().getHeadFromURL(BoxSkins.NORMAL.getBody());
+            display.setItemStack(item);
+            Transformation transformation = display.getTransformation();
+            transformation.getScale().set(1.3 * size, 0.8 * size, 1.3 * size);
+            display.setTransformation(transformation);
+        });
+
+        ItemDisplay lid = location.getWorld().spawn(location.add(0, 0.20, 0), ItemDisplay.class, display ->{
+            ItemStack item = plugin.getUtils().getHeadFromURL(BoxSkins.NORMAL.getLid());
+            display.setItemStack(item);
+            Transformation transformation = display.getTransformation();
+            transformation.getScale().set(1.3 * size, 0.5 * size, 1.3 * size);
+            display.setTransformation(transformation);
+        });
+
+        displayList.add(body);
+        displayList.add(lid);
 
         Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
             @Override
             public void run() {
-                task.cancel();
-                display.remove();
+                for(Display display : displayList){
+                    display.remove();
+                }
                 player.sendMessage("removed");
             }
-        }, 20 * 20);
+        }, 20 * 10);
     }
 }

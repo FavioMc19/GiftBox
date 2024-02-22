@@ -10,7 +10,6 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import javax.naming.Name;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,6 +22,7 @@ public class NekoItem {
     private List<String> lore;
     private Material material = Material.AMETHYST_SHARD;
     private ItemStack itemStack;
+    private ItemStack head;
 
     public NekoItem(GiftBox plugin, String boxType, ConfigurationSection config){
         this.plugin = plugin;
@@ -39,12 +39,19 @@ public class NekoItem {
 
         if(config.contains("material"))
             material = Material.valueOf(Objects.requireNonNull(config.getString("material")).toUpperCase());
+
+        if(config.contains("texture") && material != null && material.equals(Material.PLAYER_HEAD))
+            head = plugin.getUtils().getHeadFromURL(config.getString("texture"));
     }
 
     public ItemStack getItem(){
         if(itemStack != null) return itemStack;
 
         ItemStack itemStack = new ItemStack(material);
+
+        if(head != null)
+            itemStack = head;
+
         ItemMeta meta = itemStack.getItemMeta();
         assert meta != null;
         if(name != null)
@@ -61,14 +68,6 @@ public class NekoItem {
         this.itemStack = itemStack;
 
         return itemStack;
-    }
-
-    public boolean isItem(ItemStack itemStack){
-        ItemMeta meta = itemStack.getItemMeta();
-        if(meta == null) return false;
-
-        PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
-        return dataContainer.has(new NamespacedKey(plugin, "giftbox_id"));
     }
 
     public static String getGiftBoxID(ItemStack itemStack){

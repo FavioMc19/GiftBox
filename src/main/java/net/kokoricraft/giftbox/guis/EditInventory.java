@@ -147,7 +147,7 @@ public class EditInventory implements InventoryHolder {
         }
 
         if(playerInventory && playerItemStack != null){
-            boxType.addAndSave(new BoxItem(plugin, 50, "&c", playerItemStack.clone()));
+            boxType.addAndSave(new BoxItem(plugin, 50, boxType.getDefaultItemColor(), playerItemStack.clone()));
             boxType.updateEditInventory();
         }
     }
