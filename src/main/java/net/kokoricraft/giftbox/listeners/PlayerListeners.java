@@ -5,6 +5,7 @@ import net.kokoricraft.giftbox.enums.BoxSkins;
 import net.kokoricraft.giftbox.guis.EditInventory;
 import net.kokoricraft.giftbox.guis.EditItemInventory;
 import net.kokoricraft.giftbox.objects.Box;
+import net.kokoricraft.giftbox.objects.BoxSkin;
 import net.kokoricraft.giftbox.objects.BoxType;
 import net.kokoricraft.giftbox.objects.NekoItem;
 import org.bukkit.Bukkit;
@@ -34,7 +35,7 @@ public class PlayerListeners implements Listener {
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event){
-        if(!event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || !event.getBlockFace().equals(BlockFace.UP)) return;
+        if(!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) return;
         ItemStack itemStack = event.getItem();
 
         if(itemStack == null || itemStack.getType().equals(Material.AIR)) return;
@@ -47,7 +48,15 @@ public class PlayerListeners implements Listener {
         if(boxType == null) return;
         event.setCancelled(true);
 
+        if(!event.getBlockFace().equals(BlockFace.UP)) return;
+
         Player player = event.getPlayer();
+        BoxSkin boxSkin = plugin.getSkinsConfigManager().skins.get(boxType.getSkin().toString().toLowerCase());
+
+        if(boxSkin.isGenerating()){
+            plugin.getUtils().sendMessage(player, "&cLa skin de esta giftbox se esta generando...");
+            return;
+        }
 
         if(boxType.isNeedPermission() && !player.hasPermission(boxType.getPermission())){
             plugin.getUtils().sendMessage(player, "&cNecesitas permiso para usar esta gift box");

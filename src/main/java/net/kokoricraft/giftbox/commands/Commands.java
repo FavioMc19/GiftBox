@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Transformation;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -124,43 +125,8 @@ public class Commands implements CommandExecutor {
     }
 
     private void testCommand(CommandSender sender, String label, String[] arguments) {
-        List<Display> displayList = new ArrayList<>();
-
         Player player = (Player)sender;
-        Location location = player.getLocation().getBlock().getLocation().clone();
-        location.add(.5, 0.3, .5);
-
-        player.sendMessage("spawned");
-
-        double size = 0.8;
-
-        ItemDisplay body = location.getWorld().spawn(location, ItemDisplay.class, display ->{
-            ItemStack item = plugin.getUtils().getHeadFromURL(BoxSkins.NORMAL.getBody());
-            display.setItemStack(item);
-            Transformation transformation = display.getTransformation();
-            transformation.getScale().set(1.3 * size, 0.8 * size, 1.3 * size);
-            display.setTransformation(transformation);
-        });
-
-        ItemDisplay lid = location.getWorld().spawn(location.add(0, 0.20, 0), ItemDisplay.class, display ->{
-            ItemStack item = plugin.getUtils().getHeadFromURL(BoxSkins.NORMAL.getLid());
-            display.setItemStack(item);
-            Transformation transformation = display.getTransformation();
-            transformation.getScale().set(1.3 * size, 0.5 * size, 1.3 * size);
-            display.setTransformation(transformation);
-        });
-
-        displayList.add(body);
-        displayList.add(lid);
-
-        Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-            @Override
-            public void run() {
-                for(Display display : displayList){
-                    display.remove();
-                }
-                player.sendMessage("removed");
-            }
-        }, 20 * 10);
+        File file = new File(plugin.getDataFolder()+"/skins/normal/body.png");
+        player.sendMessage(plugin.getUtils().getImageHash(file));
     }
 }

@@ -4,6 +4,7 @@ import net.kokoricraft.giftbox.commands.Commands;
 import net.kokoricraft.giftbox.listeners.PlayerListeners;
 import net.kokoricraft.giftbox.managers.AnimationManager;
 import net.kokoricraft.giftbox.managers.Manager;
+import net.kokoricraft.giftbox.managers.SkinsConfigManager;
 import net.kokoricraft.giftbox.managers.TypeConfigManager;
 import net.kokoricraft.giftbox.utils.Utils;
 import org.bukkit.Bukkit;
@@ -15,6 +16,7 @@ import java.util.Objects;
 public final class GiftBox extends JavaPlugin {
 
     private Utils utils;
+    private SkinsConfigManager skinsConfigManager;
     private Manager manager;
     private AnimationManager animationManager;
     private TypeConfigManager typeConfigManager;
@@ -34,6 +36,8 @@ public final class GiftBox extends JavaPlugin {
 
     private void initClass(){
         utils = new Utils(this);
+        skinsConfigManager = new SkinsConfigManager(this);
+        skinsConfigManager.loadSkins();
         manager = new Manager(this);
         animationManager = new AnimationManager(this);
         animationManager.initAnimations();
@@ -66,5 +70,9 @@ public final class GiftBox extends JavaPlugin {
 
     public TypeConfigManager getTypeConfigManager() {
         return typeConfigManager;
+    }
+
+    public SkinsConfigManager getSkinsConfigManager() {
+        return skinsConfigManager;
     }
 }

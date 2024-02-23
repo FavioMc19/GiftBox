@@ -1,5 +1,7 @@
 package net.kokoricraft.giftbox.utils;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import net.kokoricraft.giftbox.GiftBox;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -11,10 +13,16 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.profile.PlayerProfile;
 import org.bukkit.profile.PlayerTextures;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class Utils {
     private final GiftBox plugin;
@@ -93,5 +101,32 @@ public class Utils {
             if(text.contains(color)) text = text.replace(color, hex);
         }
         return text;
+    }
+
+    private final Cache<File, String> hash_cache = CacheBuilder.newBuilder().expireAfterWrite(10, TimeUnit.MINUTES).build();
+
+    public String getImageHash(File file) {
+        String hash = hash_cache.getIfPresent(file);
+
+        if(hash != null)
+            return hash;
+
+        try {
+            byte[] fileBytes = Files.readAllBytes(file.toPath());
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hashBytes = digest.digest(fileBytes);
+            StringBuilder hexString = new StringBuilder();
+
+            for (byte b : hashBytes) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) hexString.append('0');
+                hexString.append(hex);
+            }
+
+            return hexString.toString();
+        } catch (IOException | NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
