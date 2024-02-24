@@ -169,7 +169,7 @@ public class Commands implements CommandExecutor {
 
     private void testCommand(CommandSender sender, String label, String[] arguments) {
         Player player = (Player)sender;
-        File file = new File(plugin.getDataFolder()+"/skins/normal/body.png");
-        player.sendMessage(plugin.getUtils().getImageHash(file));
+        for(int i = 0; i < 30; i++)
+            plugin.getUtils().sendMessage(player, "&c");
     }
 }

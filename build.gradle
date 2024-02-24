@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'net.kokoricraft'
-version = '0.0.1'
+version = '1.0.0'
 
 repositories {
     mavenCentral()
@@ -50,6 +50,7 @@ processResources {
 
 tasks.withType(Jar).tap {
     configureEach {
+        archiveFileName = "GiftBox.jar"
         destinationDirectory = file("D:/servers/1.20.4/plugins")
     }
 }
