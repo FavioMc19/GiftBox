@@ -62,7 +62,7 @@ public class TypeConfigManager {
         NekoItem item = new NekoItem(plugin, name, config.getConfigurationSection("item"));
         BoxType boxType = plugin.getManager().getBoxType(name);
         boxType.setItem(item);
-        boxType.setSkin(config.getString("skin"), "create type"+name);
+        boxType.setSkin(config.getString("skin"));
         boxType.setDefaultItemColor(config.getString("default_item_color"));
         boxType.setPermissions(config.getConfigurationSection("permissions"));
     }
@@ -96,7 +96,7 @@ public class TypeConfigManager {
                 boxType.setItem(new NekoItem(plugin, name, config.getConfigurationSection("item")));
 
             if(config.contains("skin"))
-                boxType.setSkin(config.getString("skin"), "load type "+name+ "path: "+config.getPath());
+                boxType.setSkin(config.getString("skin"));
 
             if(config.contains("default_item_color"))
                 boxType.setDefaultItemColor(config.getString("default_item_color"));

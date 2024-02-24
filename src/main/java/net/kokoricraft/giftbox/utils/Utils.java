@@ -23,9 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Utils {
     private final GiftBox plugin;
+    private final Pattern hex_pattern = Pattern.compile("(&#|#)([A-Fa-f0-9]{6})");
 
     public Utils(GiftBox plugin){
         this.plugin = plugin;
@@ -54,7 +57,16 @@ public class Utils {
     }
 
     public String color(String text){
-        return ChatColor.translateAlternateColorCodes('&', text);
+        return ChatColor.translateAlternateColorCodes('&', colorHex(text));
+    }
+
+    public List<String> color(List<String> list){
+        List<String> parsed = new ArrayList<>();
+
+        for(String line : list)
+            parsed.add(color(line));
+
+        return parsed;
     }
 
     public void sendMessage(CommandSender sender, String message){
@@ -128,5 +140,18 @@ public class Utils {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private String colorHex(String text) {
+        StringBuilder message = new StringBuilder();
+
+        Matcher matcher = hex_pattern.matcher(text);
+
+        int index = 0;
+        while(matcher.find()) {
+            message.append(text, index, matcher.start()).append(net.md_5.bungee.api.ChatColor.of((matcher.group().startsWith("&") ? matcher.group().substring(1) : matcher.group())));
+            index = matcher.end();
+        }
+        return message.append(text.substring(index)).toString();
     }
 }

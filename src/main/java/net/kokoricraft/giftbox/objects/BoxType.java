@@ -121,8 +121,7 @@ public class BoxType {
         return item;
     }
 
-    public void setSkin(String skin, String reason) {
-        plugin.getLogger().severe("skin: "+skin+" reason:"+reason);
+    public void setSkin(String skin) {
         if(skin == null) {
             this.skin = "normal";
             return;

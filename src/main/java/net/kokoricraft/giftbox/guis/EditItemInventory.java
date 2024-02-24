@@ -100,7 +100,7 @@ public class EditItemInventory implements InventoryHolder {
             case 7 ->{
                 plugin.getManager().setEditingColor((Player) player, true);
                 player.closeInventory();
-                player.sendMessage(plugin.getUtils().color("&eEscribe el color para el item en el chat"));
+                player.sendMessage(plugin.getUtils().color("&eWrite the color for the item in the chat"));
             }
         }
         if(updateItem){

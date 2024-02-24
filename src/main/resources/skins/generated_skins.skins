@@ -1,0 +1,21 @@
+epic:
+  body:
+    hash: a53222e56838757770c2b25a7034e7815b95909ab7d29a5c906c1f168a65bb47
+    texture: http://textures.minecraft.net/texture/b86eed25b321e028c194703501148d6efdc4a66797dd238640d0c7cf2db9dda1
+  lid:
+    hash: 1e532ee5daa5d409752158f15ec93986a9179bbab0e1bb75d89da916708470c5
+    texture: http://textures.minecraft.net/texture/5dff79f21a76e19c38c3899edbe15a92a01087796ffe43e6014c1d35fd4f433d
+normal:
+  body:
+    hash: bc6ec45879021171021a7257b40f5ff24b18b6047d2289eb31eb4a3ad09893e4
+    texture: http://textures.minecraft.net/texture/11a0814d1aa0c212e922595c1e3f3a7c27801f13da6ef593bc88179f6173ec2e
+  lid:
+    hash: 2e3e2c9038ab9b74b010d70c684fd90c2427b21f1800bdc770a8d0200378b3a9
+    texture: http://textures.minecraft.net/texture/65855d61b47f64714a47ed4b63901a5ceafd5825ab8a22c5eb93cb1b0178dbcc
+rare:
+  body:
+    hash: 1673ccbb3a0336be5fd1644b9f92b51027b8c41285b5afcb12b7832a790284b6
+    texture: http://textures.minecraft.net/texture/99f9e5b5bcb58690839cbda8791491790dfa02170f3b24d092be35150050a8d2
+  lid:
+    hash: 757289c3b4928f0624fe7967cb45cae7646dfe86aa20e2f5133f9d7b4347a5da
+    texture: http://textures.minecraft.net/texture/3e55d866e229cf252209fbd2dbf751771ba86defabf8ad38c4af6a17573638fa

@@ -36,7 +36,7 @@ public class SkinsConfigManager {
                 for(String part_name : generated_skins.getConfigurationSection(name).getKeys(false)){
                     ConfigurationSection configurationSection = generated_skins.getConfigurationSection(name+"."+part_name);
                     SkinPart skinPart = new SkinPart(configurationSection);
-                    boxSkin.addSkinPart(skinPart);
+                    boxSkin.addPart(skinPart);
                 }
                 skins.put(name, boxSkin);
             }
@@ -65,7 +65,7 @@ public class SkinsConfigManager {
 
                 String part_name = part_file.getName().replace(".png", "");
 
-                if(!skin.containsPart(part_name) || !skin.getSkinPart(part_name).getHash().equals(plugin.getUtils().getImageHash(part_file))){
+                if(!skin.contains(part_name) || !skin.getPart(part_name).getHash().equals(plugin.getUtils().getImageHash(part_file))){
                     waiting_generation.add(new SkinGeneratorCache(part_name, part_file, skin));
                     checkGeneration();
                 }
@@ -92,7 +92,7 @@ public class SkinsConfigManager {
                 client.generateUpload(skinGeneratorCache.getFile()).thenAccept(uploaded_skin ->{
                     String url = uploaded_skin.data.texture.url;
                     SkinPart skinPart = new SkinPart(skinGeneratorCache.getName(), hash, url);
-                    skinGeneratorCache.getSkin().addSkinPart(skinPart);
+                    skinGeneratorCache.getSkin().addPart(skinPart);
 
                     generated_skins.set(skinGeneratorCache.getSkin().getName()+"."+skinGeneratorCache.getName()+".hash", hash);
                     generated_skins.set(skinGeneratorCache.getSkin().getName()+"."+skinGeneratorCache.getName()+".texture", url);

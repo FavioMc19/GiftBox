@@ -52,7 +52,7 @@ public class Box {
         body.setTransformation(body_transformation);
         body.setRotation(rotation, 0);
         displays.put(BoxPart.BODY, body);
-        body.setItemStack(plugin.getUtils().getHeadFromURL(skin.getSkinPart("body").getUrl()));
+        body.setItemStack(plugin.getUtils().getHeadFromURL(skin.getPart("body").getUrl()));
 
         ItemDisplay lid = world.spawn(location.clone().add(0, 0.20, 0), ItemDisplay.class);
 
@@ -61,7 +61,7 @@ public class Box {
         lid.setTransformation(lid_transformation);
         lid.setRotation(rotation, 0);
         displays.put(BoxPart.LID, lid);
-        lid.setItemStack(plugin.getUtils().getHeadFromURL(skin.getSkinPart("lid").getUrl()));
+        lid.setItemStack(plugin.getUtils().getHeadFromURL(skin.getPart("lid").getUrl()));
 
         plugin.getAnimationManager().play("default_animation", body, lid);
 
@@ -82,8 +82,8 @@ public class Box {
     public void setSkin(BoxSkin skin){
         this.skin = skin;
 
-        ItemStack body = plugin.getUtils().getHeadFromURL(skin.getSkinPart("body").getUrl());
-        ItemStack lid = plugin.getUtils().getHeadFromURL(skin.getSkinPart("lid").getUrl());
+        ItemStack body = plugin.getUtils().getHeadFromURL(skin.getPart("body").getUrl());
+        ItemStack lid = plugin.getUtils().getHeadFromURL(skin.getPart("lid").getUrl());
 
         textures.put(BoxPart.BODY, body);
         textures.put(BoxPart.LID, lid);

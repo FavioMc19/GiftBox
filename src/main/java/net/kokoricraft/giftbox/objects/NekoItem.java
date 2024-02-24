@@ -29,10 +29,10 @@ public class NekoItem {
         this.boxType = boxType;
 
         if(config.contains("name"))
-            name = config.getString("name");
+            name = plugin.getUtils().color(config.getString("name"));
 
         if(config.contains("lore"))
-            lore = config.getStringList("lore");
+            lore = plugin.getUtils().color(config.getStringList("lore"));
 
         if(config.contains("custom_model_data"))
             custom_model_data = config.getInt("custom_model_data");

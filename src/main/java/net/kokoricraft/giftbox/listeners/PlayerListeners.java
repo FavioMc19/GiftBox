@@ -51,12 +51,12 @@ public class PlayerListeners implements Listener {
         BoxSkin boxSkin = plugin.getSkinsConfigManager().skins.get(boxType.getSkin());
 
         if(boxSkin.isGenerating()){
-            plugin.getUtils().sendMessage(player, "&cLa skin de esta giftbox se esta generando...");
+            plugin.getUtils().sendMessage(player, "&cThe skin for this giftbox is being generated...");
             return;
         }
 
         if(boxType.isNeedPermission() && !player.hasPermission(boxType.getPermission())){
-            plugin.getUtils().sendMessage(player, "&cNecesitas permiso para usar esta gift box");
+            plugin.getUtils().sendMessage(player, "&cYou need permission to use this gift box");
             return;
         }
 

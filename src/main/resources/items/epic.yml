@@ -1,0 +1,61 @@
+id-counter: 8
+items:
+  '1':
+    chance: 50.0
+    color: '&5'
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      v: 3700
+      type: DIAMOND_SWORD
+  '2':
+    chance: 50.0
+    color: '&5'
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      v: 3700
+      type: DIAMOND_AXE
+  '3':
+    chance: 50.0
+    color: '&5'
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      v: 3700
+      type: DIAMOND_CHESTPLATE
+  '4':
+    chance: 50.0
+    color: '&5'
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      v: 3700
+      type: ENCHANTED_GOLDEN_APPLE
+      amount: 2
+  '5':
+    chance: 50.0
+    color: '&5'
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      v: 3700
+      type: DIAMOND
+      amount: 10
+  '6':
+    chance: 50.0
+    color: '&5'
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      v: 3700
+      type: ENDER_PEARL
+      amount: 10
+  '7':
+    chance: 50.0
+    color: '&5'
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      v: 3700
+      type: SPIRE_ARMOR_TRIM_SMITHING_TEMPLATE
+  '8':
+    chance: 50.0
+    color: '&5'
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      v: 3700
+      type: NETHERITE_INGOT

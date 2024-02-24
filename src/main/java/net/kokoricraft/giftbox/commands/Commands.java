@@ -22,7 +22,7 @@ public class Commands implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] arguments) {
         if(arguments.length == 0){
-            plugin.getUtils().sendMessage(sender, "&cUsa /"+label+" help");
+            plugin.getUtils().sendMessage(sender, "&cUse /"+label+" help");
             return true;
         }
 
@@ -37,12 +37,12 @@ public class Commands implements CommandExecutor {
 
     private void giveCommand(CommandSender sender, String label, String[] arguments) {
         if(arguments.length != 2){
-            plugin.getUtils().sendMessage(sender, "&cDebes usar /"+label+" give <box type>");
+            plugin.getUtils().sendMessage(sender, "&cYou must use /"+label+" give <box type>");
             return;
         }
 
         if(!(sender instanceof Player player)){
-            plugin.getUtils().sendMessage(sender, "&cComando solo para jugadores");
+            plugin.getUtils().sendMessage(sender, "&cCommand only for players");
             return;
         }
 
@@ -51,14 +51,14 @@ public class Commands implements CommandExecutor {
         BoxType boxType = plugin.getManager().getBoxType(name);
 
         if(boxType == null){
-            plugin.getUtils().sendMessage(sender, "&cEsa BoxGift no existe!");
+            plugin.getUtils().sendMessage(sender, "&cThat BoxGift does not exist!");
             return;
         }
 
         NekoItem nekoItem = boxType.getItem();
 
         if(nekoItem == null){
-            plugin.getUtils().sendMessage(sender, "&cEsa BoxGift no tiene configuracion de item");
+            plugin.getUtils().sendMessage(sender, "&cThat BoxGift doesn't have item configuration");
             return;
         }
 
@@ -68,19 +68,19 @@ public class Commands implements CommandExecutor {
 
     private void createCommand(CommandSender sender, String label, String[] arguments){
         if(arguments.length != 2){
-            plugin.getUtils().sendMessage(sender, "&cDebes usar /"+label+" create <nombre>");
+            plugin.getUtils().sendMessage(sender, "&cYou must use /"+label+" create <name>");
             return;
         }
 
         if(!(sender instanceof Player player)){
-            plugin.getUtils().sendMessage(sender, "&cComando solo para jugadores");
+            plugin.getUtils().sendMessage(sender, "&cCommand only for players");
             return;
         }
 
         String name = arguments[1];
 
         if(plugin.getManager().getBoxType(name) != null){
-            plugin.getUtils().sendMessage(sender, "&cYa existe una giftbox con este nombre \n usa /"+label+" edit <nombre>");
+            plugin.getUtils().sendMessage(sender, "&cA giftbox with this name already exists \n use /"+label+" edit <name>");
             return;
         }
 
@@ -88,24 +88,24 @@ public class Commands implements CommandExecutor {
         plugin.getManager().addBox(name, boxType);
         plugin.getTypeConfigManager().createType(name);
         plugin.getManager().getBoxType(name).openEditInventory(player);
-        plugin.getUtils().sendMessage(sender, "&aCreado awa");
+        plugin.getUtils().sendMessage(sender, "&aA giftbox has been created");
     }
 
     private void editCommand(CommandSender sender, String label, String[] arguments){
         if(arguments.length != 2){
-            plugin.getUtils().sendMessage(sender, "&cDebes usar /"+label+" edit <nombre>");
+            plugin.getUtils().sendMessage(sender, "&cYou must use /"+label+" edit <name>");
             return;
         }
 
         if(!(sender instanceof Player player)){
-            plugin.getUtils().sendMessage(sender, "&cComando solo para jugadores");
+            plugin.getUtils().sendMessage(sender, "&cCommand only for players");
             return;
         }
 
         String name = arguments[1];
         BoxType boxType = plugin.getManager().getBoxType(name);
         if(boxType == null){
-            plugin.getUtils().sendMessage(sender, "&cNo existe una giftbox con este nombre \n usa /"+label+" create <nombre>");
+            plugin.getUtils().sendMessage(sender, "&cThere is no giftbox with this name \n use /"+label+" create <name>");
             return;
         }
 

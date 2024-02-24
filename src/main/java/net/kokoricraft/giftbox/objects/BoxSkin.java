@@ -14,15 +14,15 @@ public class BoxSkin {
         this.name = name;
     }
 
-    public void addSkinPart(SkinPart skinPart){
+    public void addPart(SkinPart skinPart){
         skins_parts.put(skinPart.getName(), skinPart);
     }
 
-    public boolean containsPart(String name){
+    public boolean contains(String name){
         return skins_parts.containsKey(name);
     }
 
-    public SkinPart getSkinPart(String name){
+    public SkinPart getPart(String name){
         return skins_parts.get(name);
     }
 

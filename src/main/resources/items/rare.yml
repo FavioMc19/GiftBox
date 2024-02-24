@@ -1,0 +1,48 @@
+id-counter: 6
+items:
+  '1':
+    chance: 50.0
+    color: '&b'
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      v: 3700
+      type: GOLDEN_APPLE
+      amount: 2
+  '2':
+    chance: 50.0
+    color: '&b'
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      v: 3700
+      type: IRON_PICKAXE
+  '3':
+    chance: 50.0
+    color: '&b'
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      v: 3700
+      type: IRON_SWORD
+  '4':
+    chance: 50.0
+    color: '&b'
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      v: 3700
+      type: GOLDEN_CARROT
+      amount: 10
+  '5':
+    chance: 50.0
+    color: '&b'
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      v: 3700
+      type: DIAMOND
+      amount: 3
+  '6':
+    chance: 50.0
+    color: '&b'
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      v: 3700
+      type: ENDER_PEARL
+      amount: 2

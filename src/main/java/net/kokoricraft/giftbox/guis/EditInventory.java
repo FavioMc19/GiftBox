@@ -72,7 +72,7 @@ public class EditInventory implements InventoryHolder {
             ItemMeta meta = itemStack.getItemMeta();
 
             assert meta != null;
-            meta.setDisplayName("Pagina anterior");
+            meta.setDisplayName(plugin.getUtils().color("&ePrevious page"));
             itemStack.setItemMeta(meta);
             inventory.setItem(0, itemStack);
         }
@@ -82,7 +82,7 @@ public class EditInventory implements InventoryHolder {
             ItemMeta meta = itemStack.getItemMeta();
 
             assert meta != null;
-            meta.setDisplayName("Siguiente pagina");
+            meta.setDisplayName(plugin.getUtils().color("&eNext page"));
             itemStack.setItemMeta(meta);
             inventory.setItem(45, itemStack);
         }
