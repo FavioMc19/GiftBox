@@ -1,9 +1,7 @@
 package net.kokoricraft.giftbox.objects;
 
 import net.kokoricraft.giftbox.GiftBox;
-import net.kokoricraft.giftbox.enums.BoxSkins;
 import net.kokoricraft.giftbox.guis.EditInventory;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -17,7 +15,7 @@ public class BoxType {
     private final EditInventory editInventory;
     private int idCounter;
     private NekoItem item;
-    private BoxSkins skin;
+    private String skin;
     private String defaultItemColor;
     private boolean permissions_enabled = false;
     private String permissions_permission;
@@ -126,14 +124,14 @@ public class BoxType {
     public void setSkin(String skin, String reason) {
         plugin.getLogger().severe("skin: "+skin+" reason:"+reason);
         if(skin == null) {
-            this.skin = BoxSkins.DEFAULT;
+            this.skin = "normal";
             return;
         }
 
-        this.skin = BoxSkins.valueOf(skin.toUpperCase());
+        this.skin = skin;
     }
 
-    public BoxSkins getSkin(){
+    public String getSkin(){
         return skin;
     }
 

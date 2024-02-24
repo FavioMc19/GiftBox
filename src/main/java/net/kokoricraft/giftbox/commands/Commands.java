@@ -1,23 +1,15 @@
 package net.kokoricraft.giftbox.commands;
 
 import net.kokoricraft.giftbox.GiftBox;
-import net.kokoricraft.giftbox.enums.BoxSkins;
 import net.kokoricraft.giftbox.objects.BoxType;
 import net.kokoricraft.giftbox.objects.NekoItem;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Display;
-import org.bukkit.entity.ItemDisplay;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Transformation;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Commands implements CommandExecutor {
 

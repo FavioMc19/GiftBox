@@ -1,6 +1,7 @@
 package net.kokoricraft.giftbox;
 
 import net.kokoricraft.giftbox.commands.Commands;
+import net.kokoricraft.giftbox.commands.CommandsCompleter;
 import net.kokoricraft.giftbox.listeners.PlayerListeners;
 import net.kokoricraft.giftbox.managers.AnimationManager;
 import net.kokoricraft.giftbox.managers.Manager;
@@ -8,6 +9,7 @@ import net.kokoricraft.giftbox.managers.SkinsConfigManager;
 import net.kokoricraft.giftbox.managers.TypeConfigManager;
 import net.kokoricraft.giftbox.utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -47,7 +49,11 @@ public final class GiftBox extends JavaPlugin {
     }
 
     private void initCommands(){
-        Objects.requireNonNull(getCommand("giftbox")).setExecutor(new Commands(this));
+        PluginCommand command = getCommand("giftbox");
+        if(command == null) return;
+
+        command.setExecutor(new Commands(this));
+        command.setTabCompleter(new CommandsCompleter(this));
     }
 
     private void initListeners(){

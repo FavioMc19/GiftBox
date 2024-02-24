@@ -30,7 +30,7 @@ public class Manager {
     public void place(Block block, BoxType boxType, BlockFace blockFace){
         Box box = new Box(boxType.getName(), block.getLocation(), plugin);
 
-        box.setSkin(boxType.getSkin());
+        box.setSkin(plugin.getSkinsConfigManager().skins.get(boxType.getSkin()));
         box.setDefaultItemColor(boxType.getDefaultItemColor());
         box.place(blockFace.getOppositeFace());
     }

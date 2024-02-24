@@ -2,7 +2,6 @@ package net.kokoricraft.giftbox.objects;
 
 import net.kokoricraft.giftbox.GiftBox;
 import net.kokoricraft.giftbox.enums.BoxPart;
-import net.kokoricraft.giftbox.enums.BoxSkins;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.ItemDisplay;
@@ -16,7 +15,7 @@ import java.util.Objects;
 public class Box {
     private final Map<BoxPart, ItemDisplay> displays = new HashMap<>();
     private final Map<BoxPart, ItemStack> textures = new HashMap<>();
-    private BoxSkins skin;
+    private BoxSkin skin;
 
     private final String name;
     private final Location location;
@@ -29,9 +28,6 @@ public class Box {
     }
 
     public void place(BlockFace direction){
-        if(skin == null)
-            skin = BoxSkins.DEFAULT;
-
         Location location = this.location.clone();
         location.add(.5, 0.3, .5);
 
@@ -56,7 +52,7 @@ public class Box {
         body.setTransformation(body_transformation);
         body.setRotation(rotation, 0);
         displays.put(BoxPart.BODY, body);
-        body.setItemStack(plugin.getUtils().getHeadFromURL(skin.getBody()));
+        body.setItemStack(plugin.getUtils().getHeadFromURL(skin.getSkinPart("body").getUrl()));
 
         ItemDisplay lid = world.spawn(location.clone().add(0, 0.20, 0), ItemDisplay.class);
 
@@ -65,7 +61,7 @@ public class Box {
         lid.setTransformation(lid_transformation);
         lid.setRotation(rotation, 0);
         displays.put(BoxPart.LID, lid);
-        lid.setItemStack(plugin.getUtils().getHeadFromURL(skin.getLid()));
+        lid.setItemStack(plugin.getUtils().getHeadFromURL(skin.getSkinPart("lid").getUrl()));
 
         plugin.getAnimationManager().play("default_animation", body, lid);
 
@@ -83,11 +79,11 @@ public class Box {
         }, 180);
     }
 
-    public void setSkin(BoxSkins skin){
+    public void setSkin(BoxSkin skin){
         this.skin = skin;
 
-        ItemStack body = plugin.getUtils().getHeadFromURL(skin.getBody());
-        ItemStack lid = plugin.getUtils().getHeadFromURL(skin.getLid());
+        ItemStack body = plugin.getUtils().getHeadFromURL(skin.getSkinPart("body").getUrl());
+        ItemStack lid = plugin.getUtils().getHeadFromURL(skin.getSkinPart("lid").getUrl());
 
         textures.put(BoxPart.BODY, body);
         textures.put(BoxPart.LID, lid);

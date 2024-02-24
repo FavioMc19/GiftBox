@@ -1,10 +1,8 @@
 package net.kokoricraft.giftbox.listeners;
 
 import net.kokoricraft.giftbox.GiftBox;
-import net.kokoricraft.giftbox.enums.BoxSkins;
 import net.kokoricraft.giftbox.guis.EditInventory;
 import net.kokoricraft.giftbox.guis.EditItemInventory;
-import net.kokoricraft.giftbox.objects.Box;
 import net.kokoricraft.giftbox.objects.BoxSkin;
 import net.kokoricraft.giftbox.objects.BoxType;
 import net.kokoricraft.giftbox.objects.NekoItem;
@@ -24,7 +22,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Objects;
-import java.util.Random;
 
 public class PlayerListeners implements Listener {
     private final GiftBox plugin;
@@ -51,7 +48,7 @@ public class PlayerListeners implements Listener {
         if(!event.getBlockFace().equals(BlockFace.UP)) return;
 
         Player player = event.getPlayer();
-        BoxSkin boxSkin = plugin.getSkinsConfigManager().skins.get(boxType.getSkin().toString().toLowerCase());
+        BoxSkin boxSkin = plugin.getSkinsConfigManager().skins.get(boxType.getSkin());
 
         if(boxSkin.isGenerating()){
             plugin.getUtils().sendMessage(player, "&cLa skin de esta giftbox se esta generando...");
@@ -61,6 +58,12 @@ public class PlayerListeners implements Listener {
         if(boxType.isNeedPermission() && !player.hasPermission(boxType.getPermission())){
             plugin.getUtils().sendMessage(player, "&cNecesitas permiso para usar esta gift box");
             return;
+        }
+
+        if(itemStack.getAmount() > 1){
+            itemStack.setAmount(itemStack.getAmount()-1);
+        }else{
+            player.getInventory().setItem(Objects.requireNonNull(event.getHand()), null);
         }
 
         plugin.getManager().place(block, boxType, player.getFacing().getOppositeFace());
