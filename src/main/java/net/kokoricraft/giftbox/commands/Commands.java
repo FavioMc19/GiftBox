@@ -3,6 +3,8 @@ package net.kokoricraft.giftbox.commands;
 import net.kokoricraft.giftbox.GiftBox;
 import net.kokoricraft.giftbox.objects.BoxType;
 import net.kokoricraft.giftbox.objects.NekoItem;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -72,40 +74,91 @@ public class Commands implements CommandExecutor {
     }
 
     private void giveCommand(CommandSender sender, String label, String[] arguments) {
-        if(arguments.length != 2){
-            plugin.getUtils().sendMessage(sender, "&cYou must use /"+label+" give <box type>");
+        if (arguments.length < 2 || arguments.length > 4) {
+            plugin.getUtils().sendMessage(sender, "&cUsage: /" + label + " give <box type> [player] [amount]");
             return;
         }
 
-        if(!(sender instanceof Player player)){
-            plugin.getUtils().sendMessage(sender, "&cCommand only for players");
-            return;
-        }
+        String boxName = arguments[1];
+        BoxType boxType = plugin.getManager().getBoxType(boxName);
 
-        if(!sender.hasPermission("giftbox.command.give")){
-            plugin.getUtils().sendMessage(sender, "&cYou don't have permission to use this command.");
-            return;
-        }
-
-        String name = arguments[1];
-
-        BoxType boxType = plugin.getManager().getBoxType(name);
-
-        if(boxType == null){
+        if (boxType == null) {
             plugin.getUtils().sendMessage(sender, "&cThat BoxGift does not exist!");
             return;
         }
 
         NekoItem nekoItem = boxType.getItem();
 
-        if(nekoItem == null){
+        if (nekoItem == null) {
             plugin.getUtils().sendMessage(sender, "&cThat BoxGift doesn't have item configuration");
             return;
         }
 
-        ItemStack itemStack = nekoItem.getItem();
-        player.getInventory().addItem(itemStack);
+        int amount = 1;
+        Player targetPlayer = null;
+
+        if (arguments.length > 2) {
+            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(arguments[2]);
+
+
+            if (offlinePlayer.hasPlayedBefore() || offlinePlayer.isOnline()) {
+                if (offlinePlayer.isOnline()) {
+                    targetPlayer = (Player) offlinePlayer;
+                } else {
+                    plugin.getUtils().sendMessage(sender, "&cThat player is not online.");
+                    return;
+                }
+            } else {
+                try {
+                    amount = Integer.parseInt(arguments[2]);
+                    if (amount <= 0) {
+                        plugin.getUtils().sendMessage(sender, "&cAmount must be a positive integer.");
+                        return;
+                    }
+                } catch (NumberFormatException e) {
+                    plugin.getUtils().sendMessage(sender, "&cInvalid amount specified.");
+                    return;
+                }
+            }
+        }
+
+        if (arguments.length > 3) {
+            try {
+                amount = Integer.parseInt(arguments[3]);
+                if (amount <= 0) {
+                    plugin.getUtils().sendMessage(sender, "&cAmount must be a positive integer.");
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                plugin.getUtils().sendMessage(sender, "&cInvalid amount specified.");
+                return;
+            }
+        }
+
+        if (!(sender instanceof Player)) {
+            if (targetPlayer == null) {
+                plugin.getUtils().sendMessage(sender, "&cYou must specify a player when executing this command from console.");
+                return;
+            }
+        } else {
+            if (!sender.hasPermission("giftbox.command.give.others") && targetPlayer != null && !sender.equals(targetPlayer)) {
+                plugin.getUtils().sendMessage(sender, "&cYou don't have permission to give BoxGift to other players.");
+                return;
+            }
+        }
+
+        ItemStack itemStack = nekoItem.getItem().clone();
+        itemStack.setAmount(amount);
+
+        if (targetPlayer != null) {
+            targetPlayer.getInventory().addItem(itemStack);
+            plugin.getUtils().sendMessage(sender, "&aSuccessfully gave " + amount + " " + boxName + " BoxGift(s) to " + targetPlayer.getName());
+        } else {
+            ((Player) sender).getInventory().addItem(itemStack);
+            plugin.getUtils().sendMessage(sender, "&aSuccessfully gave yourself " + amount + " " + boxName + " BoxGift(s).");
+        }
     }
+
 
     private void createCommand(CommandSender sender, String label, String[] arguments){
         if(arguments.length != 2){
