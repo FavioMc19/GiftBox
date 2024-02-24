@@ -26,7 +26,6 @@ public class AnimationManager {
     public void play(String name, Display body, Display lid){
         Animation animation = animations.get(name);
         if(animation == null){
-            Bukkit.broadcastMessage("animacion nula");
             return;
         }
 
@@ -46,6 +45,7 @@ public class AnimationManager {
         addNewDefaultAnimationStep(animation, 25);
         addNewDefaultAnimationStep(animation, 50);
         addNewDefaultAnimationEnd(animation, 75);
+
         animations.put("default_animation", animation);
     }
 

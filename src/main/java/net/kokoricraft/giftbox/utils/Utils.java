@@ -33,6 +33,7 @@ public class Utils {
     public Utils(GiftBox plugin){
         this.plugin = plugin;
     }
+    private Boolean isV1_19;
 
     public ItemStack getHeadFromURL(String texture) {
         PlayerProfile profile =  Bukkit.createPlayerProfile(UUID.randomUUID(), "");
@@ -153,5 +154,14 @@ public class Utils {
             index = matcher.end();
         }
         return message.append(text.substring(index)).toString();
+    }
+
+    public boolean isV19(){
+        if(isV1_19 != null) return isV1_19;
+
+        String packageName = Bukkit.getServer().getClass().getPackage().getName();
+        String version = packageName.substring(packageName.lastIndexOf('.') + 1);
+        isV1_19 = version.contains("1_19");
+        return  isV1_19;
     }
 }

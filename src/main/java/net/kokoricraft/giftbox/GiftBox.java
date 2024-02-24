@@ -61,6 +61,16 @@ public final class GiftBox extends JavaPlugin {
         pluginManager.registerEvents(new PlayerListeners(this), this);
     }
 
+    public void reloadConfig(){
+        new DefaultGenerator(this).check();
+
+        skinsConfigManager = new SkinsConfigManager(this);
+        skinsConfigManager.loadSkins();
+        typeConfigManager = new TypeConfigManager(this);
+        typeConfigManager.loadTypes();
+        typeConfigManager.loadItems();
+    }
+
     public Utils getUtils(){
         return utils;
     }

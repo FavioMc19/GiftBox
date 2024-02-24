@@ -152,8 +152,8 @@ public class NekoConfig {
         }
     }
 	
-	public void delete() {
-		this.configFile.delete();
+	public boolean delete() {
+		return configFile.delete();
 	}
 
 	public String getPath() {

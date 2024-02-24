@@ -56,6 +56,11 @@ public class AnimationFrame {
     }
 
     public void setTranslation(double x, double y, double z){
+        if(plugin.getUtils().isV19()){
+            x = -x;
+            z = -z;
+        }
+
         setTranslation(new Vector(x, y, z));
     }
 
@@ -65,6 +70,10 @@ public class AnimationFrame {
     }
 
     public void setRotation(int x, int y, int z, int angle){
+        if(plugin.getUtils().isV19()){
+            x = -x;
+            z = -z;
+        }
         setRotation(new Vector(x, y, z), angle);
     }
 

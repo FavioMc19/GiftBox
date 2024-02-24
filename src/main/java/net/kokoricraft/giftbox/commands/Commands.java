@@ -30,9 +30,45 @@ public class Commands implements CommandExecutor {
             case "create" -> createCommand(sender, label, arguments);
             case "edit" -> editCommand(sender, label, arguments);
             case "give" -> giveCommand(sender, label, arguments);
+            case "remove" -> removeCommand(sender, label, arguments);
+            case "reload" -> reloadCommand(sender, label, arguments);
             case "test" -> testCommand(sender, label, arguments);
         }
         return true;
+    }
+
+    private void reloadCommand(CommandSender sender, String label, String[] arguments) {
+        if(!sender.hasPermission("giftbox.command.remove")){
+            plugin.getUtils().sendMessage(sender, "&cYou don't have permission to use this command.");
+            return;
+        }
+
+        plugin.reloadConfig();
+        plugin.getUtils().sendMessage(sender, "&aConfiguration reloaded successfully.");
+    }
+
+    private void removeCommand(CommandSender sender, String label, String[] arguments) {
+        if(arguments.length != 2){
+            plugin.getUtils().sendMessage(sender, "&cYou must use /"+label+" remove <box type>");
+            return;
+        }
+
+        if(!sender.hasPermission("giftbox.command.remove")){
+            plugin.getUtils().sendMessage(sender, "&cYou don't have permission to use this command.");
+            return;
+        }
+
+        String name = arguments[1];
+
+        BoxType boxType = plugin.getManager().getBoxType(name);
+
+        if(boxType == null){
+            plugin.getUtils().sendMessage(sender, "&cThis giftbox does not exist");
+            return;
+        }
+
+        plugin.getManager().removeBox(name);
+        plugin.getUtils().sendMessage(sender, "&cThe giftbox has been successfully deleted.");
     }
 
     private void giveCommand(CommandSender sender, String label, String[] arguments) {
@@ -43,6 +79,11 @@ public class Commands implements CommandExecutor {
 
         if(!(sender instanceof Player player)){
             plugin.getUtils().sendMessage(sender, "&cCommand only for players");
+            return;
+        }
+
+        if(!sender.hasPermission("giftbox.command.give")){
+            plugin.getUtils().sendMessage(sender, "&cYou don't have permission to use this command.");
             return;
         }
 
@@ -77,6 +118,11 @@ public class Commands implements CommandExecutor {
             return;
         }
 
+        if(!sender.hasPermission("giftbox.command.create")){
+            plugin.getUtils().sendMessage(sender, "&cYou don't have permission to use this command.");
+            return;
+        }
+
         String name = arguments[1];
 
         if(plugin.getManager().getBoxType(name) != null){
@@ -99,6 +145,11 @@ public class Commands implements CommandExecutor {
 
         if(!(sender instanceof Player player)){
             plugin.getUtils().sendMessage(sender, "&cCommand only for players");
+            return;
+        }
+
+        if(!sender.hasPermission("giftbox.command.edit")){
+            plugin.getUtils().sendMessage(sender, "&cYou don't have permission to use this command.");
             return;
         }
 

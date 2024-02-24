@@ -5,7 +5,7 @@ items:
     color: '&b'
     item:
       ==: org.bukkit.inventory.ItemStack
-      v: 3700
+      v: 3337
       type: GOLDEN_APPLE
       amount: 2
   '2':
@@ -13,21 +13,21 @@ items:
     color: '&b'
     item:
       ==: org.bukkit.inventory.ItemStack
-      v: 3700
+      v: 3337
       type: IRON_PICKAXE
   '3':
     chance: 50.0
     color: '&b'
     item:
       ==: org.bukkit.inventory.ItemStack
-      v: 3700
+      v: 3337
       type: IRON_SWORD
   '4':
     chance: 50.0
     color: '&b'
     item:
       ==: org.bukkit.inventory.ItemStack
-      v: 3700
+      v: 3337
       type: GOLDEN_CARROT
       amount: 10
   '5':
@@ -35,7 +35,7 @@ items:
     color: '&b'
     item:
       ==: org.bukkit.inventory.ItemStack
-      v: 3700
+      v: 3337
       type: DIAMOND
       amount: 3
   '6':
@@ -43,6 +43,6 @@ items:
     color: '&b'
     item:
       ==: org.bukkit.inventory.ItemStack
-      v: 3700
+      v: 3337
       type: ENDER_PEARL
       amount: 2

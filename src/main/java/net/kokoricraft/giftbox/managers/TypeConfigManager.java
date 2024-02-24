@@ -19,9 +19,11 @@ public class TypeConfigManager {
     }
 
     public final Map<String, NekoConfig> items_config = new HashMap<>();
+    public final Map<String, NekoConfig> boxes_config = new HashMap<>();
 
     public void loadTypes(){
         File folder = new File(plugin.getDataFolder() + "/boxes");
+        plugin.getManager().setBoxes(new HashMap<>());
 
         int count = 0;
 
@@ -65,6 +67,7 @@ public class TypeConfigManager {
         boxType.setSkin(config.getString("skin"));
         boxType.setDefaultItemColor(config.getString("default_item_color"));
         boxType.setPermissions(config.getConfigurationSection("permissions"));
+        boxes_config.put(name, config);
     }
 
     public void addItem(String name, BoxItem item){
@@ -87,6 +90,8 @@ public class TypeConfigManager {
     }
 
     private void loadType(NekoConfig config, String name){
+        boxes_config.put(name, config);
+
         try{
             BoxType boxType = new BoxType(plugin, name);
             plugin.getManager().addBox(name, boxType);
@@ -103,6 +108,8 @@ public class TypeConfigManager {
 
             if(config.contains("permissions"))
                 boxType.setPermissions(config.getConfigurationSection("permissions"));
+
+
         }catch (Exception exception){
             exception.printStackTrace();
         }
@@ -124,5 +131,13 @@ public class TypeConfigManager {
             type.addItem(item);
         }
         type.updateEditInventory();
+    }
+
+    public void delete(String name){
+        NekoConfig item_config = this.items_config.get(name);
+        NekoConfig box_config = this.boxes_config.get(name);
+
+        if(item_config != null) item_config.delete();
+        if(box_config != null) box_config.delete();
     }
 }

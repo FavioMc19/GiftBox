@@ -5,14 +5,14 @@ items:
     color: '&7'
     item:
       ==: org.bukkit.inventory.ItemStack
-      v: 3700
+      v: 3337
       type: IRON_AXE
   '2':
     chance: 50.0
     color: '&7'
     item:
       ==: org.bukkit.inventory.ItemStack
-      v: 3700
+      v: 3337
       type: EMERALD
       amount: 10
   '3':
@@ -20,7 +20,7 @@ items:
     color: '&7'
     item:
       ==: org.bukkit.inventory.ItemStack
-      v: 3700
+      v: 3337
       type: IRON_INGOT
       amount: 9
   '4':
@@ -28,6 +28,6 @@ items:
     color: '&7'
     item:
       ==: org.bukkit.inventory.ItemStack
-      v: 3700
+      v: 3337
       type: APPLE
       amount: 5

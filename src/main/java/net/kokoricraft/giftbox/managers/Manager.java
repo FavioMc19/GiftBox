@@ -32,6 +32,10 @@ public class Manager {
 
         box.setSkin(plugin.getSkinsConfigManager().skins.get(boxType.getSkin()));
         box.setDefaultItemColor(boxType.getDefaultItemColor());
+
+        if(plugin.getUtils().isV19())
+            blockFace = blockFace.getOppositeFace();
+
         box.place(blockFace.getOppositeFace());
     }
     private BukkitTask trait_task;
@@ -117,5 +121,10 @@ public class Manager {
 
         if(!editing)
             editingItemColorList.remove(player);
+    }
+
+    public void removeBox(String name) {
+        boxes.remove(name);
+        plugin.getTypeConfigManager().delete(name);
     }
 }

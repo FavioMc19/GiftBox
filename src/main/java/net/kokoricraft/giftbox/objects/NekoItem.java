@@ -77,7 +77,7 @@ public class NekoItem {
         NamespacedKey key = new NamespacedKey(JavaPlugin.getPlugin(GiftBox.class), "giftbox_id");
 
         PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
-        if(!dataContainer.has(key)) return null;
+        if(!dataContainer.has(key, PersistentDataType.STRING)) return null;
 
         return dataContainer.get(key, PersistentDataType.STRING);
     }
