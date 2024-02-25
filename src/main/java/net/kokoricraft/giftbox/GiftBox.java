@@ -4,6 +4,7 @@ import net.kokoricraft.giftbox.commands.Commands;
 import net.kokoricraft.giftbox.commands.CommandsCompleter;
 import net.kokoricraft.giftbox.listeners.PlayerListeners;
 import net.kokoricraft.giftbox.managers.*;
+import net.kokoricraft.giftbox.utils.Metrics;
 import net.kokoricraft.giftbox.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
@@ -45,6 +46,7 @@ public final class GiftBox extends JavaPlugin {
         typeConfigManager = new TypeConfigManager(this);
         typeConfigManager.loadTypes();
         typeConfigManager.loadItems();
+        new Metrics(this, 21124);
     }
 
     private void initCommands(){

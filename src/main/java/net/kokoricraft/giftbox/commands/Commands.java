@@ -1,17 +1,17 @@
 package net.kokoricraft.giftbox.commands;
 
 import net.kokoricraft.giftbox.GiftBox;
+import net.kokoricraft.giftbox.objects.BoxItem;
 import net.kokoricraft.giftbox.objects.BoxType;
 import net.kokoricraft.giftbox.objects.NekoItem;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
-import java.io.File;
 
 public class Commands implements CommandExecutor {
 
@@ -33,13 +33,44 @@ public class Commands implements CommandExecutor {
             case "edit" -> editCommand(sender, label, arguments);
             case "give" -> giveCommand(sender, label, arguments);
             case "remove" -> removeCommand(sender, label, arguments);
-            case "reload" -> reloadCommand(sender, label, arguments);
+            case "reload" -> reloadCommand(sender);
+            case "additem" -> addItemCommand(sender, label, arguments);
             case "test" -> testCommand(sender, label, arguments);
         }
         return true;
     }
 
-    private void reloadCommand(CommandSender sender, String label, String[] arguments) {
+    private void addItemCommand(CommandSender sender, String label, String[] arguments) {
+        if(!sender.hasPermission("giftbox.command.additem")){
+            plugin.getUtils().sendMessage(sender, "&cYou don't have permission to use this command.");
+            return;
+        }
+
+        if(!(sender instanceof Player player)){
+            plugin.getUtils().sendMessage(sender, "&cCommand only for players");
+            return;
+        }
+
+        String name = arguments[1];
+        BoxType boxType = plugin.getManager().getBoxType(name);
+        if(boxType == null){
+            plugin.getUtils().sendMessage(sender, "&cThere is no giftbox with this name \n use /"+label+" create <name>");
+            return;
+        }
+
+        ItemStack itemStack = player.getInventory().getItemInMainHand();
+
+        if(itemStack.getType().equals(Material.AIR)){
+            plugin.getUtils().sendMessage(sender, "&cYou must have an item in your hand to add it!");
+            return;
+        }
+
+        boxType.addAndSave(new BoxItem(plugin, 50, boxType.getDefaultItemColor(), itemStack.clone()));
+        boxType.updateEditInventory();
+        plugin.getUtils().sendMessage(sender, "&aThe item was successfully added!");
+    }
+
+    private void reloadCommand(CommandSender sender) {
         if(!sender.hasPermission("giftbox.command.remove")){
             plugin.getUtils().sendMessage(sender, "&cYou don't have permission to use this command.");
             return;
@@ -214,10 +245,6 @@ public class Commands implements CommandExecutor {
         }
 
         boxType.openEditInventory(player);
-    }
-
-    private void sendHelpMessage(CommandSender sender){
-
     }
 
     private void testCommand(CommandSender sender, String label, String[] arguments) {
