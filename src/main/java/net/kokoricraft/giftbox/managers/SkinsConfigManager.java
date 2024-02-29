@@ -92,6 +92,7 @@ public class SkinsConfigManager {
                 client.generateUpload(skinGeneratorCache.getFile()).thenAccept(uploaded_skin ->{
                     String url = uploaded_skin.data.texture.url;
                     SkinPart skinPart = new SkinPart(skinGeneratorCache.getName(), hash, url);
+                    skinPart.setFIle(skinGeneratorCache.getFile());
                     skinGeneratorCache.getSkin().addPart(skinPart);
 
                     generated_skins.set(skinGeneratorCache.getSkin().getName()+"."+skinGeneratorCache.getName()+".hash", hash);

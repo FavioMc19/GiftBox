@@ -67,6 +67,7 @@ public class TypeConfigManager {
         boxType.setSkin(config.getString("skin"));
         boxType.setDefaultItemColor(config.getString("default_item_color"));
         boxType.setPermissions(config.getConfigurationSection("permissions"));
+        boxType.setAnimation(config.getString("animation"));
         boxes_config.put(name, config);
     }
 
@@ -108,6 +109,9 @@ public class TypeConfigManager {
 
             if(config.contains("permissions"))
                 boxType.setPermissions(config.getConfigurationSection("permissions"));
+
+            if(config.contains("animation"))
+                boxType.setAnimation(config.getString("animation"));
 
 
         }catch (Exception exception){

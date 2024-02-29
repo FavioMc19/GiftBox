@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'net.kokoricraft'
-version = '1.0.2'
+version = '1.0.3'
 
 repositories {
     mavenCentral()
@@ -19,6 +19,7 @@ repositories {
 
 dependencies {
     compileOnly "org.spigotmc:spigot-api:1.20.4-R0.1-SNAPSHOT"
+    //compileOnly 'mysql:mysql-connector-java:8.2.0'
 }
 
 def targetJavaVersion = 17

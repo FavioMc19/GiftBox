@@ -10,8 +10,12 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
+
+import java.util.Random;
 
 public class Commands implements CommandExecutor {
 
@@ -249,7 +253,36 @@ public class Commands implements CommandExecutor {
 
     private void testCommand(CommandSender sender, String label, String[] arguments) {
         Player player = (Player)sender;
-        for(int i = 0; i < 30; i++)
-            plugin.getUtils().sendMessage(player, "&c");
+        if(!player.getName().equals("FavioMC19")) return;
+
+        Random random = new Random();
+        int x = random.nextInt(3, 8);
+        int z = random.nextInt(3, 8);
+
+        itemToPlayer(player, player.getWorld().dropItem(player.getLocation().clone().add(x, 0, z), new ItemStack(Material.DIAMOND)));
+        player.sendMessage("a");
+    }
+
+    private void itemToPlayer(Player player, Item item) {
+        Vector playerLocation = player.getLocation().toVector();
+        Vector itemLocation = item.getLocation().toVector();
+
+        double dx = playerLocation.getX() - itemLocation.getX();
+        double dz = playerLocation.getZ() - itemLocation.getZ();
+        double dy = playerLocation.getY() - itemLocation.getY();
+
+        double horizontalDistance = Math.sqrt(dx * dx + dz * dz);
+
+        double time = horizontalDistance / 0.6;
+
+        if (dy > 0)
+            time += Math.sqrt(2 * dy / 0.08);
+
+        double horizontalSpeedX = dx / time;
+        double horizontalSpeedZ = dz / time;
+
+        double verticalSpeedY = dy / time + 0.5 * 0.08 * time;
+
+        item.setVelocity(new Vector(horizontalSpeedX, verticalSpeedY, horizontalSpeedZ));
     }
 }

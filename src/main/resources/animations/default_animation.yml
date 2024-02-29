@@ -1,0 +1,115 @@
+init:
+  parts:
+    body:
+      location: "x:0.5 y:0.3 z:0.5"
+      size: "x:1.04 y:0.64 z:1.04"
+    lid:
+      location: "x:0.5 y:0.5 z:0.5"
+      size: "x:1.04 y:0.4 z:1.04"
+  drop:
+     location: "x:0.5 y:0.5 z:0.5"
+     delay: 110
+     vector:
+       north:
+         - "x:0.1 y:0.3 z:0"
+         - "x:-0.1 y:0.3 z:0"
+       south:
+         - "x:0.1 y:0.3 z:0"
+         - "x:-0.1 y:0.3 z:0"
+       west:
+         - "x:0 y:0.3 z:0.1"
+         - "x:0 y:0.3 z:-0.1"
+       east:
+         - "x:0 y:0.3 z:0.1"
+         - "x:0 y:0.3 z:-0.1"
+
+frames:
+  - "group1 25"
+  - "group1 50"
+  - "group1 75"
+  - "group2 100"
+
+frames_groups:
+  group1:
+    0:
+      delay: 0
+      duration: 5
+      parts:
+        body:
+          actions:
+            - "[scale] x:1.3 y:0.4 z:1.3"
+            - "[translation] x:0 y:-0.1 z:0"
+            - "[sound] sound:ITEM_CROSSBOW_LOADING_END volume:1 pitch:1"
+        lid:
+          actions:
+            - "[scale] x:1.3 y:0.3 z:1.3"
+            - "[translation] x:0 y:-0.15 z:0"
+    1:
+      delay: 5
+      duration: 5
+      parts:
+        body:
+          actions:
+            - "[scale] x:0.9 y:0.8 z:0.9"
+            - "[translation] x:0 y:0.1 z:0"
+            - "[sound] sound:ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR volume:1 pitch:4"
+            - "[sound] sound:ENTITY_ALLAY_HURT volume:1 pitch:2"
+            - "[particle] particle:DRAGON_BREATH x:0 y:0 z:0 range:0.6 amount:8"
+        lid:
+          actions:
+            - "[scale] x:0.9 y:0.3 z:0.9"
+            - "[translation] x:0 y:0.05 z:0"
+    2:
+      delay: 10
+      duration: 3
+      parts:
+        body:
+          actions:
+            - "[scale] x:1.04 y:0.64 z:1.04"
+            - "[translation] x:0 y:0.0 z:0"
+        lid:
+          actions:
+            - "[scale] x:1.04 y:0.4 z:1.04"
+            - "[translation] x:0 y:0.0 z:0"
+  group2:
+    0:
+      delay: 0
+      duration: 5
+      parts:
+        body:
+          actions:
+            - "[scale] x:1.3 y:0.4 z:1.3"
+            - "[translation] x:0 y:-0.1 z:0"
+            - "[sound] sound:ITEM_CROSSBOW_LOADING_END volume:1 pitch:4"
+        lid:
+          actions:
+            - "[scale] x:1.3 y:0.3 z:1.3"
+            - "[translation] x:0 y:-0.15 z:0"
+    1:
+      delay: 5
+      duration: 5
+      parts:
+        body:
+          actions:
+            - "[scale] x:0.8 y:1.1 z:0.8"
+            - "[translation] x:0 y:0.25 z:0"
+            - "[particle] particle:DRAGON_BREATH x:0 y:0 z:0 range:0.6 amount:8"
+            - "[sound] sound:ENTITY_CHICKEN_EGG volume:1 pitch:1"
+        lid:
+          actions:
+            - "[scale] x:0.8 y:0.3 z:0.8"
+            - "[translation] x:0 y:0.2 z:0.3"
+            - "[rotation] x:1 y:0 z:0 angle:70"
+    2:
+      delay: 10
+      duration: 3
+      parts:
+        body:
+          actions:
+            - "[scale] x:1.04 y:0.64 z:1.04"
+            - "[translation] x:0 y:0.0 z:0"
+        lid:
+          actions:
+            - "[scale] x:1.04 y:0.4 z:1.04"
+            - "[translation] x:0 y:0.0 z:0.3"
+      

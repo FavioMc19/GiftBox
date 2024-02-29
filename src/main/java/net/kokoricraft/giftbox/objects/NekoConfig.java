@@ -7,6 +7,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.*;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class NekoConfig {
 	private final File configFile;
@@ -184,5 +185,9 @@ public class NekoConfig {
 			outputStream.close();
 			inputStream.close();
 		}catch (Exception ignored){}
+	}
+
+	public String getName(){
+		return configFile.getName().split(Pattern.quote("."))[0];
 	}
 }

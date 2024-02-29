@@ -3,16 +3,30 @@ package net.kokoricraft.giftbox.objects;
 import net.kokoricraft.giftbox.GiftBox;
 import net.kokoricraft.giftbox.enums.BoxPart;
 import org.bukkit.entity.Display;
+import org.bukkit.entity.ItemDisplay;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Animation {
 
     private final GiftBox plugin;
+    private final Map<String, PartData> parts = new HashMap<>();
+    private DropData dropData;
 
     public Animation(GiftBox plugin){
         this.plugin = plugin;
+    }
+
+    public void addPart(PartData partData){
+        parts.put(partData.getName(), partData);
+    }
+
+    public PartData getPartData(String name){
+        return parts.get(name);
+    }
+
+    public Collection<String> getParts(){
+        return parts.keySet();
     }
 
     private final List<AnimationFrame> frames = new ArrayList<>();
@@ -21,14 +35,18 @@ public class Animation {
         this.frames.add(frame);
     }
 
-    public void play(Display body, Display lid){
-        for (AnimationFrame animationFrame : frames) {
+    public void play(Map<String, ItemDisplay> displayMap){
+        for(AnimationFrame animationFrame : frames){
             AnimationFrame frame = animationFrame.clone();
-            if(frame.getPart().equals(BoxPart.BODY)){
-                frame.play(body);
-                continue;
-            }
-            frame.play(lid);
+            frame.play(displayMap.get(frame.getPart()));
         }
+    }
+
+    public void setDropData(DropData dropData){
+        this.dropData = dropData;
+    }
+
+    public DropData getDropData() {
+        return dropData;
     }
 }

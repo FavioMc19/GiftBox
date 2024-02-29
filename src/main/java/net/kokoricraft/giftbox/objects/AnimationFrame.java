@@ -1,7 +1,6 @@
 package net.kokoricraft.giftbox.objects;
 
 import net.kokoricraft.giftbox.GiftBox;
-import net.kokoricraft.giftbox.enums.BoxPart;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Display;
 import org.bukkit.util.Transformation;
@@ -15,7 +14,7 @@ public class AnimationFrame {
     private final GiftBox plugin;
     private final int delay;
     private final int duration;
-    private  final BoxPart part;
+    private  final String part;
     private Vector scale_vector;
     private Vector translation_vector;
     private Vector axis_vector;
@@ -24,7 +23,7 @@ public class AnimationFrame {
     private final List<BoxParticle> particles = new ArrayList<>();
 
 
-    public AnimationFrame(GiftBox plugin, int delay, int duration, BoxPart part){
+    public AnimationFrame(GiftBox plugin, int delay, int duration, String part){
         this.plugin = plugin;
         this.delay = delay;
         this.duration = duration;
@@ -39,7 +38,7 @@ public class AnimationFrame {
         return duration;
     }
 
-    public BoxPart getPart(){
+    public String getPart(){
         return part;
     }
 
@@ -115,11 +114,14 @@ public class AnimationFrame {
         display.setInterpolationDelay(-1);
         display.setInterpolationDuration(duration);
 
-        if(scale_vector != null)
+        if(scale_vector != null){
             transformation.getScale().set(scale_vector.getX(), scale_vector.getY(), scale_vector.getZ());
+        }
 
-        if(translation_vector != null)
+
+        if(translation_vector != null){
             transformation.getTranslation().set(translation_vector.getX(), translation_vector.getY(), translation_vector.getZ());
+        }
 
         if(axis_vector != null){
             transformation.getLeftRotation().set(new AxisAngle4f((float) Math.toRadians(angle), axis_vector.getBlockX(), axis_vector.getBlockY(), axis_vector.getBlockZ()));

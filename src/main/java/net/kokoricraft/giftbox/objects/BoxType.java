@@ -19,6 +19,7 @@ public class BoxType {
     private String defaultItemColor;
     private boolean permissions_enabled = false;
     private String permissions_permission;
+    private String animation = "default_animation";
 
     public BoxType(GiftBox plugin, String name){
         this.plugin = plugin;
@@ -155,5 +156,13 @@ public class BoxType {
 
     public String getPermission(){
         return permissions_permission;
+    }
+
+    public void setAnimation(String animation){
+        this.animation = animation;
+    }
+
+    public String getAnimation(){
+        return animation;
     }
 }

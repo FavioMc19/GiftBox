@@ -5,13 +5,13 @@ import net.kokoricraft.giftbox.commands.CommandsCompleter;
 import net.kokoricraft.giftbox.listeners.PlayerListeners;
 import net.kokoricraft.giftbox.managers.*;
 import net.kokoricraft.giftbox.utils.Metrics;
+import net.kokoricraft.giftbox.sql.MySQLConnector;
 import net.kokoricraft.giftbox.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Objects;
 
 public final class GiftBox extends JavaPlugin {
 
@@ -20,6 +20,7 @@ public final class GiftBox extends JavaPlugin {
     private Manager manager;
     private AnimationManager animationManager;
     private TypeConfigManager typeConfigManager;
+    private MySQLConnector sqlConnector;
 
     @Override
     public void onEnable() {
@@ -31,7 +32,6 @@ public final class GiftBox extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
     }
 
     private void initClass(){

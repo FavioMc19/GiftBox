@@ -32,6 +32,7 @@ public class Manager {
 
         box.setSkin(plugin.getSkinsConfigManager().skins.get(boxType.getSkin()));
         box.setDefaultItemColor(boxType.getDefaultItemColor());
+        box.setAnimation(plugin.getAnimationManager().animations.get(boxType.getAnimation()));
 
         if(plugin.getUtils().isV19())
             blockFace = blockFace.getOppositeFace();
@@ -40,7 +41,7 @@ public class Manager {
     }
     private BukkitTask trait_task;
 
-    public void dropItem(BoxItem boxItem, Location location, BlockFace direction){
+    public void dropItem(BoxItem boxItem, Location location, Vector velocity){
         World world = location.getWorld();
         if(world == null) return;
 
@@ -52,13 +53,6 @@ public class Manager {
         BoxParticle particle = new BoxParticle(Particle.REDSTONE, plugin.getUtils().getColor(boxItem.getColor()), 0.5f);
         Item item = world.dropItem(location, boxItem.getItemStack().clone());
         traitItems.put(item, particle);
-
-        Vector velocity = new Vector(0, 0.3, 0);
-
-        switch(direction){
-            case NORTH, SOUTH -> velocity.setX(getVelocityRandomDirection());
-            case WEST, EAST -> velocity.setZ(getVelocityRandomDirection());
-        }
 
         item.setVelocity(velocity);
 

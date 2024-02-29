@@ -2,6 +2,7 @@ package net.kokoricraft.giftbox.objects;
 
 import net.kokoricraft.giftbox.GiftBox;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 public class BoxSkin {
@@ -24,6 +25,10 @@ public class BoxSkin {
 
     public SkinPart getPart(String name){
         return skins_parts.get(name);
+    }
+
+    public Collection<String> getPartsNames(){
+        return skins_parts.keySet();
     }
 
     public String getName(){

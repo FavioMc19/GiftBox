@@ -13,8 +13,9 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.profile.PlayerProfile;
 import org.bukkit.profile.PlayerTextures;
 
-import java.io.File;
-import java.io.IOException;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
 import java.security.MessageDigest;
@@ -25,6 +26,9 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 public class Utils {
     private final GiftBox plugin;
@@ -163,5 +167,55 @@ public class Utils {
         String version = packageName.substring(packageName.lastIndexOf('.') + 1);
         isV1_19 = version.contains("1_19");
         return  isV1_19;
+    }
+
+    public byte[] ImageListToByte(List<File> images){
+        try{
+            File temporalFile = File.createTempFile("images-"+System.currentTimeMillis(), ".zip");
+            try (FileOutputStream fos = new FileOutputStream(temporalFile);
+                 ZipOutputStream zos = new ZipOutputStream(fos)) {
+                for(File file : images){
+                    zos.putNextEntry(new ZipEntry((file.getName())));
+                    try(FileInputStream fis = new FileInputStream(file)){
+                        byte[] buffer = new byte[1024];
+                        int bytesRead;
+                        while((bytesRead = fis.read(buffer)) != -1){
+                            zos.write(buffer, 0, bytesRead);
+                        }
+                    }
+                    zos.closeEntry();
+                }
+            }
+
+            return Files.readAllBytes(temporalFile.toPath());
+        }catch (Exception exception){
+            exception.printStackTrace();
+            return null;
+        }
+    }
+
+    private static void extractFilesFromByte(byte[] zipFileBytes, String destinationDirectory) {
+        try {
+            ByteArrayInputStream bais = new ByteArrayInputStream(zipFileBytes);
+            try (ZipInputStream zis = new ZipInputStream(bais)) {
+                ZipEntry entry;
+                while ((entry = zis.getNextEntry()) != null) {
+                    String fileName = entry.getName();
+                    File file = new File(destinationDirectory + File.separator + fileName);
+                    new File(file.getParent()).mkdirs();
+                    try (FileOutputStream fos = new FileOutputStream(file)) {
+                        byte[] buffer = new byte[1024];
+                        int bytesRead;
+                        while ((bytesRead = zis.read(buffer)) != -1) {
+                            fos.write(buffer, 0, bytesRead);
+                        }
+                    }
+                    zis.closeEntry();
+                }
+            }
+            System.out.println("Files extracted successfully.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

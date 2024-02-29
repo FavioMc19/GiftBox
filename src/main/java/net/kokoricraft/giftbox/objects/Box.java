@@ -4,18 +4,21 @@ import net.kokoricraft.giftbox.GiftBox;
 import net.kokoricraft.giftbox.enums.BoxPart;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Display;
 import org.bukkit.entity.ItemDisplay;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Transformation;
+import org.bukkit.util.Vector;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 public class Box {
-    private final Map<BoxPart, ItemDisplay> displays = new HashMap<>();
-    private final Map<BoxPart, ItemStack> textures = new HashMap<>();
+    private final Map<String, ItemDisplay> displays = new HashMap<>();
+    private final Map<String, ItemStack> textures = new HashMap<>();
     private BoxSkin skin;
+    private Animation animation;
 
     private final String name;
     private final Location location;
@@ -29,7 +32,6 @@ public class Box {
 
     public void place(BlockFace direction){
         Location location = this.location.clone();
-        location.add(.5, 0.3, .5);
 
         Objects.requireNonNull(location.getWorld()).playSound(location, Sound.BLOCK_AMETHYST_CLUSTER_PLACE, 1f, 1f);
 
@@ -44,58 +46,75 @@ public class Box {
 
         if(world == null) return;
 
+        for(String partName : animation.getParts()){
+            PartData partData = animation.getPartData(partName);
+            try{
+                ItemDisplay itemDisplay = world.spawn(location.clone().add(partData.getlocationX(), partData.getlocationY(), partData.getlocationZ()), ItemDisplay.class);
+
+                Transformation transformation = itemDisplay.getTransformation();
+                transformation.getScale().set(partData.getScaleX(), partData.getScaleY(), partData.getScaleZ());
+                itemDisplay.setTransformation(transformation);
+
+                itemDisplay.setRotation(rotation, 0);
+                displays.put(partName, itemDisplay);
+                itemDisplay.setItemStack(plugin.getUtils().getHeadFromURL(skin.getPart(partName).getUrl()));
+            }catch (Exception exception){
+                exception.printStackTrace();
+            }
+        }
+
         //place in world and save in placed file
-        ItemDisplay body = world.spawn(location, ItemDisplay.class);
-
-        Transformation body_transformation = body.getTransformation();
-        body_transformation.getScale().set(1.04, 0.64, 1.04);
-        body.setTransformation(body_transformation);
-        body.setRotation(rotation, 0);
-        displays.put(BoxPart.BODY, body);
-        body.setItemStack(plugin.getUtils().getHeadFromURL(skin.getPart("body").getUrl()));
-
-        ItemDisplay lid = world.spawn(location.clone().add(0, 0.20, 0), ItemDisplay.class);
-
-        Transformation lid_transformation = lid.getTransformation();
-        lid_transformation.getScale().set(1.04, 0.4, 1.04);
-        lid.setTransformation(lid_transformation);
-        lid.setRotation(rotation, 0);
-        displays.put(BoxPart.LID, lid);
-        lid.setItemStack(plugin.getUtils().getHeadFromURL(skin.getPart("lid").getUrl()));
-
-        plugin.getAnimationManager().play("default_animation", body, lid);
+        plugin.getAnimationManager().play(animation, displays);
 
         BoxItem boxItem = plugin.getManager().getBoxType(name).selectRandomItem();
 
         if(boxItem != null && (boxItem.getColor() == null || boxItem.getColor().isEmpty() || boxItem.getColor().isBlank()))
             boxItem.setColor(default_item_color);
 
-        Bukkit.getScheduler().runTaskLater(plugin, () -> plugin.getManager().dropItem(boxItem, location, direction), 145);
+        DropData dropData = animation.getDropData();
+
+        if(dropData != null){
+            Location dropLocation = location.clone().add(dropData.getX(), dropData.getY(), dropData.getZ());
+
+            Vector velocity = switch (direction){
+                case NORTH -> dropData.getNorth();
+                case SOUTH -> dropData.getSouth();
+                case EAST -> dropData.getEast();
+                default -> dropData.getWest();
+            };
+
+            Bukkit.getScheduler().runTaskLater(plugin, () -> plugin.getManager().dropItem(boxItem, dropLocation, velocity), dropData.getDelay());
+        }
+
+
+
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             BoxParticle particle = new BoxParticle(Particle.DRAGON_BREATH, 0.2, 8, 0, 0.3, 0);
             particle.play(location);
-            body.remove();
-            lid.remove();
+            Map<String, Display> map = new HashMap<>(displays);
+            for(Display display : map.values()){
+               display.remove();
+            }
         }, 180);
     }
 
     public void setSkin(BoxSkin skin){
         this.skin = skin;
 
-        ItemStack body = plugin.getUtils().getHeadFromURL(skin.getPart("body").getUrl());
-        ItemStack lid = plugin.getUtils().getHeadFromURL(skin.getPart("lid").getUrl());
-
-        textures.put(BoxPart.BODY, body);
-        textures.put(BoxPart.LID, lid);
-
-        if(displays.containsKey(BoxPart.BODY))
-            displays.get(BoxPart.BODY).setItemStack(body);
-
-        if(displays.containsKey(BoxPart.LID))
-            displays.get(BoxPart.LID).setItemStack(lid);
+        for(String part : skin.getPartsNames()){
+            SkinPart skinPart = skin.getPart(part);
+            ItemStack itemStack = plugin.getUtils().getHeadFromURL(skinPart.getUrl());
+            textures.put(part, itemStack);
+            if(displays.containsKey(part))
+                displays.get(part).setItemStack(itemStack);
+        }
     }
 
     public void setDefaultItemColor(String default_item_color){
         this.default_item_color = default_item_color;
+    }
+
+    public void setAnimation(Animation animation) {
+        this.animation = animation;
     }
 }
