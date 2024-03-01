@@ -6,6 +6,7 @@ import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.ItemDisplay;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
@@ -24,6 +25,7 @@ public class Box {
     private final Location location;
     private final GiftBox plugin;
     private String default_item_color = "&7";
+    private Player owner;
     public Box(String name, Location location, GiftBox plugin){
         this.name = name;
         this.location = location;
@@ -70,10 +72,14 @@ public class Box {
 
         BoxItem boxItem = plugin.getManager().getBoxType(name).selectRandomItem();
 
+
         if(boxItem != null && (boxItem.getColor() == null || boxItem.getColor().isEmpty() || boxItem.getColor().isBlank()))
             boxItem.setColor(default_item_color);
 
         DropData dropData = animation.getDropData();
+
+        if(owner != null && dropData.isPickupOnlyOwner())
+            boxItem.setOwner(owner.getUniqueId());
 
         if(dropData != null){
             Location dropLocation = location.clone().add(dropData.getX(), dropData.getY(), dropData.getZ());
@@ -87,8 +93,6 @@ public class Box {
 
             Bukkit.getScheduler().runTaskLater(plugin, () -> plugin.getManager().dropItem(boxItem, dropLocation, velocity), dropData.getDelay());
         }
-
-
 
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             BoxParticle particle = new BoxParticle(Particle.DRAGON_BREATH, 0.2, 8, 0, 0.3, 0);
@@ -112,6 +116,10 @@ public class Box {
         }
     }
 
+    public void setOwner(Player player){
+        this.owner = player;
+    }
+
     public void setDefaultItemColor(String default_item_color){
         this.default_item_color = default_item_color;
     }
@@ -122,6 +130,10 @@ public class Box {
 
     private Vector getPartLocation(BlockFace direction, double x, double y, double z){
         Vector vector = new Vector(0, y, 0);
+
+        if(plugin.getUtils().isV19())
+            direction = direction.getOppositeFace();
+
         switch (direction){
             case NORTH -> {
                 vector.setZ(-z);

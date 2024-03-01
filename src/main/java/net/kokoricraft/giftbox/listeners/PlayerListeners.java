@@ -66,7 +66,7 @@ public class PlayerListeners implements Listener {
             player.getInventory().setItem(Objects.requireNonNull(event.getHand()), null);
         }
 
-        plugin.getManager().place(block, boxType, player.getFacing().getOppositeFace());
+        plugin.getManager().place(block, boxType, player.getFacing().getOppositeFace(), player);
     }
 
     @EventHandler

@@ -10,6 +10,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class BoxItem {
     private final GiftBox plugin;
@@ -17,6 +18,7 @@ public class BoxItem {
     private int id;
     private String color;
     private final ItemStack itemStack;
+    private UUID owner;
 
     public BoxItem(GiftBox plugin, double chance, String color, ItemStack itemStack){
         this.plugin = plugin;
@@ -80,5 +82,13 @@ public class BoxItem {
 
     public void setColor(String color){
         this.color = color;
+    }
+
+    public void setOwner(UUID owner){
+        this.owner = owner;
+    }
+
+    public UUID getOwner() {
+        return owner;
     }
 }

@@ -27,8 +27,9 @@ public class Manager {
         this.plugin = plugin;
     }
 
-    public void place(Block block, BoxType boxType, BlockFace blockFace){
+    public void place(Block block, BoxType boxType, BlockFace blockFace, Player owner){
         Box box = new Box(boxType.getName(), block.getLocation(), plugin);
+        box.setOwner(owner);
 
         box.setSkin(plugin.getSkinsConfigManager().skins.get(boxType.getSkin()));
         box.setDefaultItemColor(boxType.getDefaultItemColor());
@@ -52,6 +53,11 @@ public class Manager {
 
         BoxParticle particle = new BoxParticle(Particle.REDSTONE, plugin.getUtils().getColor(boxItem.getColor()), 0.5f);
         Item item = world.dropItem(location, boxItem.getItemStack().clone());
+
+        UUID owner = boxItem.getOwner();
+
+        if(owner != null) item.setOwner(owner);
+
         traitItems.put(item, particle);
 
         item.setVelocity(velocity);

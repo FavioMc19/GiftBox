@@ -16,6 +16,7 @@ public class DropData {
     private final List<Vector> west;
     private final List<Vector> east;
     private final Random random;
+    private boolean pickup_only_owner = false;
 
     public DropData(int delay, double x, double y, double z, List<Vector> north, List<Vector> south, List<Vector> west, List<Vector> east) {
         this.delay = delay;
@@ -59,5 +60,13 @@ public class DropData {
 
     public double getZ() {
         return z;
+    }
+
+    public boolean isPickupOnlyOwner(){
+        return pickup_only_owner;
+    }
+
+    public void setPickupOnlyOwner(boolean pickup_only_owner){
+        this.pickup_only_owner = pickup_only_owner;
     }
 }

@@ -120,7 +120,10 @@ public class AnimationManager {
         List<String> west = config.getStringList("init.drop.vector.west");
         List<String> east = config.getStringList("init.drop.vector.east");
 
+        boolean pickup_only_owner = config.getBoolean("init.drop.pickup_only_owner", false);
+
         DropData dropData = new DropData(drop_delay, drop_x, drop_y,drop_z, getVectorList(north), getVectorList(south), getVectorList(west), getVectorList(east));
+        dropData.setPickupOnlyOwner(pickup_only_owner);
         animation.setDropData(dropData);
 
         try{
