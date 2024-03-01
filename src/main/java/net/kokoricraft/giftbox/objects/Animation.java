@@ -12,9 +12,11 @@ public class Animation {
     private final GiftBox plugin;
     private final Map<String, PartData> parts = new HashMap<>();
     private DropData dropData;
+    private final String name;
 
-    public Animation(GiftBox plugin){
+    public Animation(GiftBox plugin, String name){
         this.plugin = plugin;
+        this.name = name;
     }
 
     public void addPart(PartData partData){
@@ -48,5 +50,9 @@ public class Animation {
 
     public DropData getDropData() {
         return dropData;
+    }
+
+    public String getName() {
+        return name;
     }
 }

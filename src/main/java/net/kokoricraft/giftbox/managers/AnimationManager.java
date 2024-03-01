@@ -2,6 +2,7 @@ package net.kokoricraft.giftbox.managers;
 
 import net.kokoricraft.giftbox.GiftBox;
 import net.kokoricraft.giftbox.objects.*;
+import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
@@ -17,8 +18,8 @@ import java.util.Map;
 public class AnimationManager {
 
     //This class and system are a disaster.
-    // When I come up with a better way to implement it, I'll change it.
-    // If anyone wants to contribute, they can do so because I want this plugin to be for the community :)
+    //When I come up with a better way to implement it, I'll change it.
+    //If anyone wants to contribute, they can do so because I want this plugin to be for the community :)
 
     private final GiftBox plugin;
     public final Map<String, Animation> animations = new HashMap<>();
@@ -34,6 +35,8 @@ public class AnimationManager {
     }
 
     public void initAnimations(){
+        animations.clear();
+
         File animations_folder = new File(plugin.getDataFolder()+"/animations/");
         if(!animations_folder.exists())
             animations_folder.mkdirs();
@@ -62,13 +65,21 @@ public class AnimationManager {
 
     private void initDefaultAnimation(){
         NekoConfig default_animation = new NekoConfig("animations/default_animation.yml", plugin);
+
+        if(default_animation.getString("init.parts.body.location", "").equals("x:0.5 y:0.3 z:0.5")){
+            default_animation.set("init.parts.body.location", "x:0 y:0.3 z:0");
+            default_animation.set("init.parts.lid.location", "x:0 y:0.5 z:0");
+            default_animation.set("init.drop.location", "x:0 y:0.5 z:0");
+            default_animation.saveConfig();
+        }
+
         loadAnimation(default_animation);
     }
 
     public void loadAnimation(NekoConfig config){
-        if(!config.contains("init") || !config.contains("frames")) return;
-        Animation animation = new Animation(plugin);
+        if(!config.contains("init")) return;
         String animation_name = config.getName();
+        Animation animation = new Animation(plugin, animation_name);
 
         try{
             for(String part_name : config.getConfigurationSection("init.parts").getKeys(false)){
@@ -113,58 +124,60 @@ public class AnimationManager {
         animation.setDropData(dropData);
 
         try{
-            for(String group_frame : config.getStringList("frames")){
-                int group_delay = 0;
-                String group = group_frame;
-                if(group_frame.contains(" ")){
-                    group = group_frame.split(" ")[0];
-                    group_delay = Integer.parseInt(group_frame.split(" ")[1]);
-                }
+            if(config.contains("frames")){
+                for(String group_frame : config.getStringList("frames")){
+                    int group_delay = 0;
+                    String group = group_frame;
+                    if(group_frame.contains(" ")){
+                        group = group_frame.split(" ")[0];
+                        group_delay = Integer.parseInt(group_frame.split(" ")[1]);
+                    }
 
-                if(!config.contains("frames_groups."+group)) continue;
-                for(String step_id : config.getConfigurationSection("frames_groups."+group).getKeys(false)){
-                    String path = "frames_groups."+group+"."+step_id+".";
-                    int delay = config.getInt(path+"delay", 0) + group_delay;
-                    int duration = config.getInt(path+"duration", 1);
+                    if(!config.contains("frames_groups."+group)) continue;
+                    for(String step_id : config.getConfigurationSection("frames_groups."+group).getKeys(false)){
+                        String path = "frames_groups."+group+"."+step_id+".";
+                        int delay = config.getInt(path+"delay", 0) + group_delay;
+                        int duration = config.getInt(path+"duration", 1);
 
-                    if(config.contains(path+"parts")){
-                        for(String part_name : config.getConfigurationSection(path+"parts").getKeys(false)){
-                            AnimationFrame frame = new AnimationFrame(plugin, delay, duration, part_name);
-                            for(String action_data : config.getStringList(path+"parts."+part_name+".actions")){
+                        if(config.contains(path+"parts")){
+                            for(String part_name : config.getConfigurationSection(path+"parts").getKeys(false)){
+                                AnimationFrame frame = new AnimationFrame(plugin, delay, duration, part_name);
+                                for(String action_data : config.getStringList(path+"parts."+part_name+".actions")){
 
-                                String action = action_data.split(" ")[0];
-                                Map<String, String> data = getMap(action_data.replace(action+" ", ""));
+                                    String action = action_data.split(" ")[0];
+                                    Map<String, String> data = getMap(action_data.replace(action+" ", ""));
 
-                                double x = Double.parseDouble(data.getOrDefault("x", "0"));
-                                double y = Double.parseDouble(data.getOrDefault("y", "0"));
-                                double z = Double.parseDouble(data.getOrDefault("z", "0"));
+                                    double x = Double.parseDouble(data.getOrDefault("x", "0"));
+                                    double y = Double.parseDouble(data.getOrDefault("y", "0"));
+                                    double z = Double.parseDouble(data.getOrDefault("z", "0"));
 
-                                switch (action.toLowerCase()){
-                                    case "[scale]" ->{
-                                        frame.setScale(x, y, z);
+                                    switch (action.toLowerCase()){
+                                        case "[scale]" ->{
+                                            frame.setScale(x, y, z);
+                                        }
+                                        case "[translation]" ->{
+                                            frame.setTranslation(x, y, z);
+                                        }
+                                        case "[sound]" ->{
+                                            Sound sound = Sound.valueOf(data.get("sound").toUpperCase());
+                                            float volume = Float.parseFloat(data.getOrDefault("volume", "1"));
+                                            float pitch = Float.parseFloat(data.getOrDefault("pitch", "1"));
+                                            frame.addSound(new BoxSound(sound, volume, pitch));
+                                        }
+                                        case "[particle]" ->{
+                                            Particle particle = Particle.valueOf(data.getOrDefault("particle", "DRAGON_BREATH").toUpperCase());
+                                            double range = Double.parseDouble(data.getOrDefault("range", "1"));
+                                            int amount = Integer.parseInt(data.getOrDefault("amount", "1"));
+                                            frame.addParticles(new BoxParticle(particle, range, amount, x, y, z));
+                                        }
+                                        case "[rotation]" ->{
+                                            int angle = Integer.parseInt(data.getOrDefault("angle", "0"));
+                                            frame.setRotation((int) x, (int) y, (int) z, angle);
+                                        }
                                     }
-                                    case "[translation]" ->{
-                                        frame.setTranslation(x, y, z);
-                                    }
-                                    case "[sound]" ->{
-                                        Sound sound = Sound.valueOf(data.get("sound").toUpperCase());
-                                        float volume = Float.parseFloat(data.getOrDefault("volume", "1"));
-                                        float pitch = Float.parseFloat(data.getOrDefault("pitch", "1"));
-                                        frame.addSound(new BoxSound(sound, volume, pitch));
-                                    }
-                                    case "[particle]" ->{
-                                        Particle particle = Particle.valueOf(data.getOrDefault("particle", "DRAGON_BREATH").toUpperCase());
-                                        double range = Double.parseDouble(data.getOrDefault("range", "1"));
-                                        int amount = Integer.parseInt(data.getOrDefault("amount", "1"));
-                                        frame.addParticles(new BoxParticle(particle, range, amount, x, y, z));
-                                    }
-                                    case "[rotation]" ->{
-                                        int angle = Integer.parseInt(data.getOrDefault("angle", "0"));
-                                        frame.setRotation((int) x, (int) y, (int) z, angle);
-                                    }
+
+                                    animation.addFrame(frame);
                                 }
-
-                                animation.addFrame(frame);
                             }
                         }
                     }

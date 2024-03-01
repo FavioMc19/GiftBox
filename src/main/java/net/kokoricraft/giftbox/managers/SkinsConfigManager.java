@@ -65,8 +65,10 @@ public class SkinsConfigManager {
 
                 String part_name = part_file.getName().replace(".png", "");
 
-                if(!skin.contains(part_name) || !skin.getPart(part_name).getHash().equals(plugin.getUtils().getImageHash(part_file))){
-                    waiting_generation.add(new SkinGeneratorCache(part_name, part_file, skin));
+                String hash = plugin.getUtils().getImageHash(part_file);
+
+                if(!skin.contains(part_name) || !skin.getPart(part_name).getHash().equals(hash)){
+                    waiting_generation.add(new SkinGeneratorCache(part_name, part_file, skin, hash));
                     checkGeneration();
                 }
             }
@@ -78,9 +80,30 @@ public class SkinsConfigManager {
 
     private void checkGeneration(){
         if(generating || waiting_generation.isEmpty()) return;
+        SkinGeneratorCache skinGeneratorCache = waiting_generation.get(0);
+
+        String hash = skinGeneratorCache.getHash();
+
+        for(BoxSkin skin : skins.values()){
+            for(String part_name : skin.getPartsNames()){
+                SkinPart otherSkinpart = skin.getPart(part_name);
+                if(otherSkinpart.getHash().equals(hash)){
+                    SkinPart skinPart = new SkinPart(skinGeneratorCache.getName(), hash, otherSkinpart.getUrl());
+                    skinPart.setFIle(skinGeneratorCache.getFile());
+                    skinGeneratorCache.getSkin().addPart(skinPart);
+
+                    generated_skins.set(skinGeneratorCache.getSkin().getName()+"."+skinGeneratorCache.getName()+".hash", hash);
+                    generated_skins.set(skinGeneratorCache.getSkin().getName()+"."+skinGeneratorCache.getName()+".texture", otherSkinpart.getUrl());
+                    generated_skins.saveConfig();
+
+                    waiting_generation.remove(skinGeneratorCache);
+                    checkGeneration();
+                    return;
+                }
+            }
+        }
 
         generating = true;
-        SkinGeneratorCache skinGeneratorCache = waiting_generation.get(0);
         genSkinPart(skinGeneratorCache);
     }
 

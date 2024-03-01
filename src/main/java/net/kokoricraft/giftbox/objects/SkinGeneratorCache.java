@@ -7,11 +7,13 @@ public class SkinGeneratorCache {
      private final BoxSkin skin;
     private final String name;
     private final File file;
+    private final String hash;
 
-    public SkinGeneratorCache(String name, File file, BoxSkin skin){
+    public SkinGeneratorCache(String name, File file, BoxSkin skin, String hash){
         this.name = name;
         this.file = file;
         this.skin = skin;
+        this.hash = hash;
     }
 
     public BoxSkin getSkin(){
@@ -24,6 +26,10 @@ public class SkinGeneratorCache {
 
     public File getFile(){
         return file;
+    }
+
+    public String getHash(){
+        return hash;
     }
 
     @Override

@@ -71,6 +71,7 @@ public final class GiftBox extends JavaPlugin {
         typeConfigManager = new TypeConfigManager(this);
         typeConfigManager.loadTypes();
         typeConfigManager.loadItems();
+        animationManager.initAnimations();
     }
 
     public Utils getUtils(){

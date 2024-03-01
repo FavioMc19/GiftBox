@@ -32,6 +32,7 @@ public class Box {
 
     public void place(BlockFace direction){
         Location location = this.location.clone();
+        location.add(0.5, 0, 0.5);
 
         Objects.requireNonNull(location.getWorld()).playSound(location, Sound.BLOCK_AMETHYST_CLUSTER_PLACE, 1f, 1f);
 
@@ -49,7 +50,8 @@ public class Box {
         for(String partName : animation.getParts()){
             PartData partData = animation.getPartData(partName);
             try{
-                ItemDisplay itemDisplay = world.spawn(location.clone().add(partData.getlocationX(), partData.getlocationY(), partData.getlocationZ()), ItemDisplay.class);
+                Vector pos = getPartLocation(direction, partData.getlocationX(), partData.getlocationY(), partData.getlocationZ());
+                ItemDisplay itemDisplay = world.spawn(location.clone().add(pos.getX(), pos.getY(), pos.getZ()), ItemDisplay.class);
 
                 Transformation transformation = itemDisplay.getTransformation();
                 transformation.getScale().set(partData.getScaleX(), partData.getScaleY(), partData.getScaleZ());
@@ -116,5 +118,28 @@ public class Box {
 
     public void setAnimation(Animation animation) {
         this.animation = animation;
+    }
+
+    private Vector getPartLocation(BlockFace direction, double x, double y, double z){
+        Vector vector = new Vector(0, y, 0);
+        switch (direction){
+            case NORTH -> {
+                vector.setZ(-z);
+                vector.setX(x);
+            }
+            case SOUTH -> {
+                vector.setZ(z);
+                vector.setX(-x);
+            }
+            case EAST -> {
+                vector.setX(z);
+                vector.setZ(x);
+            }
+            default -> {
+                vector.setX(-z);
+                vector.setZ(-x);
+            }
+        }
+        return vector;
     }
 }
