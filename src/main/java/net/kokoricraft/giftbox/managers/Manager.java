@@ -21,6 +21,7 @@ public class Manager {
     private final Map<Item, BoxParticle> traitItems = new HashMap<>();
     private final List<Player> editingItemColorList = new ArrayList<>();
     private Map<String, BoxType> boxes = new HashMap<>();
+    public List<Box> placed_boxes = new ArrayList<>();
     public Map<Player, EditItemInventory> editItemInventoryMap = new HashMap<>();
 
     public Manager(GiftBox plugin){
@@ -39,6 +40,7 @@ public class Manager {
             blockFace = blockFace.getOppositeFace();
 
         box.place(blockFace.getOppositeFace());
+        placed_boxes.add(box);
     }
     private BukkitTask trait_task;
 

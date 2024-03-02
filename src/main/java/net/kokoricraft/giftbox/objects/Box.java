@@ -26,6 +26,10 @@ public class Box {
     private final GiftBox plugin;
     private String default_item_color = "&7";
     private Player owner;
+    private BoxItem boxItem;
+    private Location dropLocation;
+    private Vector dropVector;
+    private boolean removed = false;
     public Box(String name, Location location, GiftBox plugin){
         this.name = name;
         this.location = location;
@@ -70,8 +74,7 @@ public class Box {
         //place in world and save in placed file
         plugin.getAnimationManager().play(animation, displays);
 
-        BoxItem boxItem = plugin.getManager().getBoxType(name).selectRandomItem();
-
+        boxItem = plugin.getManager().getBoxType(name).selectRandomItem();
 
         if(boxItem != null && (boxItem.getColor() == null || boxItem.getColor().isEmpty() || boxItem.getColor().isBlank()))
             boxItem.setColor(default_item_color);
@@ -82,25 +85,24 @@ public class Box {
             boxItem.setOwner(owner.getUniqueId());
 
         if(dropData != null){
-            Location dropLocation = location.clone().add(dropData.getX(), dropData.getY(), dropData.getZ());
+            dropLocation = location.clone().add(dropData.getX(), dropData.getY(), dropData.getZ());
 
-            Vector velocity = switch (direction){
+            dropVector = switch (direction){
                 case NORTH -> dropData.getNorth();
                 case SOUTH -> dropData.getSouth();
                 case EAST -> dropData.getEast();
                 default -> dropData.getWest();
             };
 
-            Bukkit.getScheduler().runTaskLater(plugin, () -> plugin.getManager().dropItem(boxItem, dropLocation, velocity), dropData.getDelay());
+            Bukkit.getScheduler().runTaskLater(plugin, () ->{
+                if(!removed) dropItem();
+            }, dropData.getDelay());
         }
 
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             BoxParticle particle = new BoxParticle(Particle.DRAGON_BREATH, 0.2, 8, 0, 0.3, 0);
             particle.play(location);
-            Map<String, Display> map = new HashMap<>(displays);
-            for(Display display : map.values()){
-               display.remove();
-            }
+            remove();
         }, 180);
     }
 
@@ -126,6 +128,18 @@ public class Box {
 
     public void setAnimation(Animation animation) {
         this.animation = animation;
+    }
+
+    public void remove(){
+        Map<String, Display> map = new HashMap<>(displays);
+        for(Display display : map.values()){
+            display.remove();
+        }
+        removed = true;
+    }
+
+    public void dropItem(){
+        plugin.getManager().dropItem(boxItem, dropLocation, dropVector);
     }
 
     private Vector getPartLocation(BlockFace direction, double x, double y, double z){
