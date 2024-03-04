@@ -34,7 +34,7 @@ public final class GiftBox extends JavaPlugin {
     public void onDisable() {
         manager.placed_boxes.forEach(box -> {
             box.remove();
-            box.dropItem();
+            box.forceDropItem();
         });
     }
 

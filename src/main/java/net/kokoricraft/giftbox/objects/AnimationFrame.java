@@ -3,14 +3,17 @@ package net.kokoricraft.giftbox.objects;
 import net.kokoricraft.giftbox.GiftBox;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Display;
+import org.bukkit.entity.ItemDisplay;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
 import org.joml.AxisAngle4f;
+import org.joml.Quaternionf;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AnimationFrame {
+public class AnimationFrame implements Cloneable{
     private final GiftBox plugin;
     private final int delay;
     private final int duration;
@@ -19,23 +22,18 @@ public class AnimationFrame {
     private Vector translation_vector;
     private Vector axis_vector;
     private Integer angle;
+    private String spawn_part;
+    private String remove_part;
     private final List<BoxSound> sounds = new ArrayList<>();
     private final List<BoxParticle> particles = new ArrayList<>();
-
+    private Box box;
+    private boolean isPlayed = false;
 
     public AnimationFrame(GiftBox plugin, int delay, int duration, String part){
         this.plugin = plugin;
         this.delay = delay;
         this.duration = duration;
         this.part = part;
-    }
-
-    public int getDelay(){
-        return delay;
-    }
-
-    public int getDuration(){
-        return duration;
     }
 
     public String getPart(){
@@ -61,6 +59,14 @@ public class AnimationFrame {
         }
 
         setTranslation(new Vector(x, y, z));
+    }
+
+    public void setSpawn(String part){
+        this.spawn_part = part;
+    }
+
+    public void setRemove(String part){
+        this.remove_part = part;
     }
 
     public void setRotation(Vector axis, int angle){
@@ -100,16 +106,26 @@ public class AnimationFrame {
         addParticles(particles);
     }
 
-    public void play(Display display){
+    public void play(String part_name, Box box){
+        this.box = box;
         if(delay == 0){
-            startPlaying(display);
+            startPlaying(part_name);
             return;
         }
 
-        Bukkit.getScheduler().runTaskLater(plugin, () -> startPlaying(display), delay);
+        Bukkit.getScheduler().runTaskLater(plugin, () -> startPlaying(part_name), delay);
     }
 
-    private void startPlaying(Display  display){
+    private void startPlaying(String part_name){
+        ItemDisplay display = box.getDisplays().get(part_name);
+
+        if(remove_part != null){
+            ItemDisplay remove_display = box.getDisplays().get(remove_part);
+            if(remove_display != null) remove_display.remove();
+            return;
+        }
+
+        if(display == null) return;
         Transformation transformation = display.getTransformation();
         display.setInterpolationDelay(-1);
         display.setInterpolationDuration(duration);
@@ -118,18 +134,33 @@ public class AnimationFrame {
             transformation.getScale().set(scale_vector.getX(), scale_vector.getY(), scale_vector.getZ());
         }
 
-
         if(translation_vector != null){
             transformation.getTranslation().set(translation_vector.getX(), translation_vector.getY(), translation_vector.getZ());
         }
 
         if(axis_vector != null){
-            transformation.getLeftRotation().set(new AxisAngle4f((float) Math.toRadians(angle), axis_vector.getBlockX(), axis_vector.getBlockY(), axis_vector.getBlockZ()));
+            Quaternionf currentRotation = transformation.getLeftRotation();
+            Quaternionf newRotation = new Quaternionf().rotationAxis(new AxisAngle4f((float) Math.toRadians(angle), axis_vector.getBlockX(), axis_vector.getBlockY(), axis_vector.getBlockZ()));
+            currentRotation.mul(newRotation);
+            transformation.getLeftRotation().set(currentRotation);
         }
         display.setTransformation(transformation);
 
-        sounds.forEach(sound -> sound.play(display.getLocation()));
-        particles.forEach(particle -> particle.play(display.getLocation()));
+        if(spawn_part != null)
+            box.spawnPart(spawn_part);
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                sounds.forEach(sound -> sound.play(display.getLocation()));
+                particles.forEach(particle -> particle.play(display.getLocation()));
+            }
+        }.runTaskLater(plugin, 1);
+        isPlayed = true;
+    }
+
+    public void setPlayed(boolean played){
+        this.isPlayed = played;
     }
 
     @Override
@@ -150,6 +181,20 @@ public class AnimationFrame {
         if(!particles.isEmpty())
             animationFrame.addParticles(particles);
 
+        if(spawn_part != null)
+            animationFrame.setSpawn(spawn_part);
+
+        if(remove_part != null)
+            animationFrame.setRemove(remove_part);
+
+        animationFrame.setPlayed(isPlayed);
+
         return animationFrame;
     }
+
+    @Override
+    public String toString(){
+        return "{part:"+this.part+"delay:"+delay+" duration:"+duration+" scale:"+scale_vector+" translation:"+translation_vector+" axis:"+axis_vector+" angle:"+angle+" sound: "+sounds.size()+" particle:"+particles.size()+" spawn_part:"+spawn_part+"}";
+    }
+
 }

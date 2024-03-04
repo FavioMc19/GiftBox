@@ -2,11 +2,9 @@ package net.kokoricraft.giftbox.managers;
 
 import net.kokoricraft.giftbox.GiftBox;
 import net.kokoricraft.giftbox.objects.*;
-import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.ItemDisplay;
 import org.bukkit.util.Vector;
 
 import java.io.File;
@@ -28,10 +26,10 @@ public class AnimationManager {
         this.plugin = plugin;
     }
 
-    public void play(Animation animation, Map<String, ItemDisplay> displayMap){
+    public void play(Animation animation, Box box){
         if(animation == null) return;
 
-        animation.play(displayMap);
+        animation.play(box);
     }
 
     public void initAnimations(){
@@ -84,24 +82,21 @@ public class AnimationManager {
         try{
             for(String part_name : config.getConfigurationSection("init.parts").getKeys(false)){
                 ConfigurationSection section = config.getConfigurationSection("init.parts."+part_name);
-                double location_x = 0, location_y = 0, location_z = 0, size_x = 1, size_y = 1, size_z = 1;
-
-                if(section.contains("location")){
-                    Map<String, String> location_data = getMap(section.getString("location", ""));
-                    location_x = Double.parseDouble(location_data.getOrDefault("x", "0"));
-                    location_y = Double.parseDouble(location_data.getOrDefault("y", "0"));
-                    location_z = Double.parseDouble(location_data.getOrDefault("z", "0"));
-                }
-
-                if(section.contains("size")){
-                    Map<String, String> location_data = getMap(section.getString("size", ""));
-                    size_x = Double.parseDouble(location_data.getOrDefault("x", "0"));
-                    size_y = Double.parseDouble(location_data.getOrDefault("y", "0"));
-                    size_z = Double.parseDouble(location_data.getOrDefault("z", "0"));
-                }
-
-                PartData partData = new PartData(part_name, location_x, location_y, location_z, size_x, size_y, size_z);
+                PartData partData = getPartData(section, false);
                 animation.addPart(partData);
+            }
+        }catch (Exception exception){
+            exception.printStackTrace();
+        }
+
+        try{
+            if(config.contains("temporal_parts")){
+                for(String temporal_part_name : config.getConfigurationSection("temporal_parts").getKeys(false)){
+                    ConfigurationSection section = config.getConfigurationSection("temporal_parts."+temporal_part_name);
+                    PartData partData = getPartData(section, true);
+                    animation.addPart(partData);
+                }
+
             }
         }catch (Exception exception){
             exception.printStackTrace();
@@ -121,11 +116,14 @@ public class AnimationManager {
         List<String> east = config.getStringList("init.drop.vector.east");
 
         boolean pickup_only_owner = config.getBoolean("init.drop.pickup_only_owner", false);
+        boolean vector_to_player = config.getBoolean("init.drop.vector_to_player", false);
 
         DropData dropData = new DropData(drop_delay, drop_x, drop_y,drop_z, getVectorList(north), getVectorList(south), getVectorList(west), getVectorList(east));
         dropData.setPickupOnlyOwner(pickup_only_owner);
+        dropData.setVectorToPlayer(vector_to_player);
         animation.setDropData(dropData);
 
+        int max_duration = 0;
         try{
             if(config.contains("frames")){
                 for(String group_frame : config.getStringList("frames")){
@@ -141,6 +139,9 @@ public class AnimationManager {
                         String path = "frames_groups."+group+"."+step_id+".";
                         int delay = config.getInt(path+"delay", 0) + group_delay;
                         int duration = config.getInt(path+"duration", 1);
+
+                        if(delay > max_duration)
+                            max_duration = delay;
 
                         if(config.contains(path+"parts")){
                             for(String part_name : config.getConfigurationSection(path+"parts").getKeys(false)){
@@ -177,10 +178,20 @@ public class AnimationManager {
                                             int angle = Integer.parseInt(data.getOrDefault("angle", "0"));
                                             frame.setRotation((int) x, (int) y, (int) z, angle);
                                         }
-                                    }
+                                        case "[temporal_part]" ->{
+                                            String name = data.getOrDefault("part", null);
 
-                                    animation.addFrame(frame);
+                                            if(name != null)
+                                                frame.setSpawn(name);
+                                        }
+                                        case "[remove_part]" ->{
+                                            String name = data.getOrDefault("part", null);
+                                            if(name != null)
+                                                frame.setRemove(name);
+                                        }
+                                    }
                                 }
+                                animation.addFrame(frame);
                             }
                         }
                     }
@@ -189,7 +200,45 @@ public class AnimationManager {
         }catch (Exception exception){
             exception.printStackTrace();
         }
+
+        animation.setRemoveDelay(max_duration + 100);
+
         animations.put(animation_name, animation);
+    }
+
+    private PartData getPartData(ConfigurationSection section, boolean temporal){
+        String part_name = section.getName();
+        double location_x = 0, location_y = 0, location_z = 0, size_x = 1, size_y = 1, size_z = 1;
+
+        if(section.contains("location")){
+            Map<String, String> location_data = getMap(section.getString("location", ""));
+            location_x = Double.parseDouble(location_data.getOrDefault("x", "0"));
+            location_y = Double.parseDouble(location_data.getOrDefault("y", "0"));
+            location_z = Double.parseDouble(location_data.getOrDefault("z", "0"));
+        }
+
+        if(section.contains("size")){
+            Map<String, String> location_data = getMap(section.getString("size", ""));
+            size_x = Double.parseDouble(location_data.getOrDefault("x", "0"));
+            size_y = Double.parseDouble(location_data.getOrDefault("y", "0"));
+            size_z = Double.parseDouble(location_data.getOrDefault("z", "0"));
+        }
+
+        boolean glow = section.getBoolean("glow", false);
+        String glow_color = section.getString("glow_color");
+
+        String type = section.getString("type", "skin");
+        String material = section.getString("material");
+
+        PartData partData = new PartData(part_name, location_x, location_y, location_z, size_x, size_y, size_z);
+        partData.setGlow(glow);
+        partData.setGlowColor(glow_color);
+
+        partData.setTemporal(temporal);
+        partData.setType(type);
+        partData.setMaterial(material);
+
+        return partData;
     }
 
     private void initNewDefaultAnimation(){

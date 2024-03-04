@@ -1,9 +1,6 @@
 package net.kokoricraft.giftbox.objects;
 
 import net.kokoricraft.giftbox.GiftBox;
-import net.kokoricraft.giftbox.enums.BoxPart;
-import org.bukkit.entity.Display;
-import org.bukkit.entity.ItemDisplay;
 
 import java.util.*;
 
@@ -13,10 +10,13 @@ public class Animation {
     private final Map<String, PartData> parts = new HashMap<>();
     private DropData dropData;
     private final String name;
+    private int remove_delay;
+    private LinkedList<AnimationFrame> frames;
 
     public Animation(GiftBox plugin, String name){
         this.plugin = plugin;
         this.name = name;
+        frames = new LinkedList<>();
     }
 
     public void addPart(PartData partData){
@@ -31,16 +31,19 @@ public class Animation {
         return parts.keySet();
     }
 
-    private final List<AnimationFrame> frames = new ArrayList<>();
-
     public void addFrame(AnimationFrame frame){
         this.frames.add(frame);
     }
 
-    public void play(Map<String, ItemDisplay> displayMap){
-        for(AnimationFrame animationFrame : frames){
+    public void addFrames(LinkedList<AnimationFrame> list){
+        this.frames = list;
+    }
+
+    public void play(Box box){
+        for(AnimationFrame animationFrame : this.frames){
             AnimationFrame frame = animationFrame.clone();
-            frame.play(displayMap.get(frame.getPart()));
+
+            frame.play(frame.getPart(), box);
         }
     }
 
@@ -54,5 +57,13 @@ public class Animation {
 
     public String getName() {
         return name;
+    }
+
+    public void setRemoveDelay(int delay){
+        this.remove_delay = delay;
+    }
+
+    public int getRemoveDelay(){
+        return remove_delay;
     }
 }

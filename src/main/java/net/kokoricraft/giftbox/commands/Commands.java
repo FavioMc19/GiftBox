@@ -5,13 +5,13 @@ import net.kokoricraft.giftbox.objects.BoxItem;
 import net.kokoricraft.giftbox.objects.BoxType;
 import net.kokoricraft.giftbox.objects.NekoItem;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -255,34 +255,38 @@ public class Commands implements CommandExecutor {
         Player player = (Player)sender;
         if(!player.getName().equals("FavioMC19")) return;
 
-        Random random = new Random();
-        int x = random.nextInt(3, 8);
-        int z = random.nextInt(3, 8);
+        Dolphin dolphin = null;
+        double distance = 999999;
+        for(Entity entity : player.getNearbyEntities(30, 30, 30)){
+            if(!(entity instanceof Dolphin dp)) continue;
+            double localDistance = player.getLocation().distance(dp.getLocation());;
+            if(dolphin == null){
+                dolphin = dp;
+                distance = localDistance;
+            }else{
+                if(localDistance <= distance){
+                    dolphin = dp;
+                    distance = localDistance;
+                }
+            }
+        }
 
-        itemToPlayer(player, player.getWorld().dropItem(player.getLocation().clone().add(x, 0, z), new ItemStack(Material.DIAMOND)));
-        player.sendMessage("a");
-    }
+        Skeleton slime = null;
 
-    private void itemToPlayer(Player player, Item item) {
-        Vector playerLocation = player.getLocation().toVector();
-        Vector itemLocation = item.getLocation().toVector();
+        for(Entity entity : player.getNearbyEntities(30, 30, 30)){
+            if(!(entity instanceof Skeleton sl)) continue;
+            slime = sl;
+        }
 
-        double dx = playerLocation.getX() - itemLocation.getX();
-        double dz = playerLocation.getZ() - itemLocation.getZ();
-        double dy = playerLocation.getY() - itemLocation.getY();
+        if(dolphin != null){
+            player.sendMessage("Se encontro un delfin");
 
-        double horizontalDistance = Math.sqrt(dx * dx + dz * dz);
-
-        double time = horizontalDistance / 0.6;
-
-        if (dy > 0)
-            time += Math.sqrt(2 * dy / 0.08);
-
-        double horizontalSpeedX = dx / time;
-        double horizontalSpeedZ = dz / time;
-
-        double verticalSpeedY = dy / time + 0.5 * 0.08 * time;
-
-        item.setVelocity(new Vector(horizontalSpeedX, verticalSpeedY, horizontalSpeedZ));
+            if(slime != null){
+                player.sendMessage("Se encontro un slime");
+                dolphin.setGlowing(true);
+                dolphin.setTarget(slime);
+                slime.setGlowing(true);
+            }
+        }
     }
 }

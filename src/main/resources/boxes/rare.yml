@@ -17,6 +17,11 @@ default_item_color: "&b"
 # Default skins: [normal, rare, epic].
 skin: "rare"
 
+#Here's the animation for the giftbox.
+#You must ensure that the animation and the skin have the same parts to avoid making a mistake.
+#The animations are in the animations folder.
+animation: "default_animation"
+
 # Here you can activate the requirement for players to use a specific command in order to use this box.
 # You can change the permission as you wish.
 permissions:
