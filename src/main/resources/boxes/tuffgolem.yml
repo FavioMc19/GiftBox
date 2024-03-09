@@ -1,0 +1,26 @@
+# "GiftBox" item. This item serves as the itemized version of the box.
+# You can obtain them using the command /giftbox give <giftbox type>.
+item:
+  name: "&eTuff Golem"
+  material: PLAYER_HEAD
+  texture: "http://textures.minecraft.net/texture/4bf33cac5b34c0b2ea028e8479205bf648b7fe411f985cd3559b8cb1c9b215c1"
+  lore:
+    - "&aBox example"
+    - "&bAnimation example"
+  custom_model_data: 0
+
+# This is the default color of the particle that each item will have.
+# You can change it specifically for each item in the item configuration in /giftbox edit <giftbox type>.
+default_item_color: "&7"
+
+animation: "tuff_golem_animation"
+
+# This is the skin that the box will have. You can create custom skins in the skins folder.
+# Default skins: [normal, rare, epic].
+skin: "tuff_golem"
+
+# Here you can activate the requirement for players to use a specific command in order to use this box.
+# You can change the permission as you wish.
+permissions:
+  enabled: false
+  permission: "giftbox.box.use.MyBox"

@@ -21,6 +21,7 @@ public final class GiftBox extends JavaPlugin {
     private AnimationManager animationManager;
     private TypeConfigManager typeConfigManager;
     private MySQLConnector sqlConnector;
+    private ConfigManager configManager;
 
     @Override
     public void onEnable() {
@@ -39,6 +40,8 @@ public final class GiftBox extends JavaPlugin {
     }
 
     private void initClass(){
+        configManager = new ConfigManager(this);
+
         new DefaultGenerator(this).check();
 
         utils = new Utils(this);
@@ -96,5 +99,8 @@ public final class GiftBox extends JavaPlugin {
 
     public SkinsConfigManager getSkinsConfigManager() {
         return skinsConfigManager;
+    }
+    public ConfigManager getConfigManager(){
+        return configManager;
     }
 }

@@ -19,3 +19,22 @@ rare:
   lid:
     hash: 757289c3b4928f0624fe7967cb45cae7646dfe86aa20e2f5133f9d7b4347a5da
     texture: http://textures.minecraft.net/texture/3e55d866e229cf252209fbd2dbf751771ba86defabf8ad38c4af6a17573638fa
+tuff_golem:
+  head:
+    hash: 42cb29be85f18ff2e70ab28109c010a59734a01475949d7f9104801d06a873a6
+    texture: http://textures.minecraft.net/texture/928b4878a59b03c574ccd99c081bf494297baf6451117607b28cce9dee3e937
+  cloth:
+    hash: bc9084f3c1c53aa274607635d09d264642141701c56ef0954308ee81b522337d
+    texture: http://textures.minecraft.net/texture/2e27261b62065dabe8db3e46e492e6de13293a269302838c93ca6785342a6404
+  left_arm:
+    hash: fd326aa6bbcf944eb0d5c11a3c9637f77a25e7f01a47fc4f9e09c112cc0c824d
+    texture: http://textures.minecraft.net/texture/1b7e6dcfa84dbb1784e2ea05bbf0192929900277f90fcd86b2c166d39e0d3299
+  legs:
+    hash: 024dab961f7c0a4af91a1684b54e5c0c7de7ffd2abcae6d6f5a11f48f2601132
+    texture: http://textures.minecraft.net/texture/bc620ec90efb85c10baae486f512defe46ab454c9d3c5274ee6eb3b0931e4302
+  nose:
+    hash: e2bdac93d5783ab73a7f0130ea0acaee48377f42178c6c9efde14b39f497e442
+    texture: http://textures.minecraft.net/texture/b48fe323211cfc65baa69bae005a67d58b5198e56616664bc0a516e4727c072b
+  right_arm:
+    hash: 979a100f2df06bdee965548f62e69c0f4faf24bb7bbaa38ac34d035122b124fe
+    texture: http://textures.minecraft.net/texture/1b7e6dcfa84dbb1784e2ea05bbf0192929900277f90fcd86b2c166d39e0d3299

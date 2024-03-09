@@ -12,6 +12,17 @@ public class DefaultGenerator {
     }
 
     public void check(){
+        if(plugin.getConfigManager().getConfigVersion() == -1){
+            plugin.saveResource("boxes/tuffgolem.yml", false);
+            plugin.saveResource("animations/tuff_golem_animation.yml", false);
+            plugin.saveResource("skins/tuff_golem/cloth.png", false);
+            plugin.saveResource("skins/tuff_golem/head.png", false);
+            plugin.saveResource("skins/tuff_golem/left_arm.png", false);
+            plugin.saveResource("skins/tuff_golem/right_arm.png", false);
+            plugin.saveResource("skins/tuff_golem/legs.png", false);
+            plugin.saveResource("skins/tuff_golem/nose.png", false);
+        }
+
         File folder = plugin.getDataFolder();
         if(folder.exists()) return;
 

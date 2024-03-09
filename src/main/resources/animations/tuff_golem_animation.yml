@@ -1,0 +1,254 @@
+init:
+  parts:
+    head:
+      location: "x:0 y:1 z:0"
+      size: "x:1 y:1 z:1"
+      glow: true
+      glow_color: "#a26e1a"
+    legs:
+      location: "x:0 y:0.5 z:0.05"
+      size: "x:0.95 y:1 z:0.5"
+      glow: true
+      glow_color: "#a26e1a"
+    left_arm:
+      location: "x:0.35 y:0.6 z:0"
+      size: "x:0.4 y:1 z:0.4"
+      glow: true
+      glow_color: "#a26e1a"
+    right_arm:
+      location: "x:-0.35 y:0.6 z:0"
+      size: "x:0.4 y:1 z:0.4"
+      glow: true
+      glow_color: "#a26e1a"
+    nose:
+      location: "x:0 y:0.65 z:-0.275"
+      size: "x:0.2 y:0.3 z:0.1"
+      glow: true
+      glow_color: "#a26e1a"
+    cloth:
+      location: "x:0 y:0.45 z:-0.1"
+      size: "x:1 y:0.8 z:0.1"
+      glow: true
+      glow_color: "#a26e1a"
+      
+  drop:
+     location: "x:0 y:0 z:0"
+     delay: 160
+     vector_to_player: true
+
+temporal_parts:
+  item:
+    location: "x:-0.1 y:0.4 z:0.1"
+    size: "x:0.4 y:0.4 z:0.4"
+    type: item
+    material: "[dropitem] 0"
+    glow: true
+    glow_color: "#a26e1a"
+    
+         
+frames:
+  - "rotate_head 0"
+  - "rotate_hand_cloth 0"
+  - "search_item 50"
+
+frames_groups:
+  rotate_head:
+    0:
+      delay: 20
+      duration: 20
+      parts:
+        head:
+          actions:
+            - "[rotation] x:1 y:0 z:0 angle:30"
+            - "[translation] x:0 y:-0.08 z:0.2"
+            - "[sound] sound:BLOCK_grindstone_use volume:0.2 pitch:1"
+    nose0:
+      delay: 20
+      duration: 5
+      parts:
+        nose:
+          actions:
+            - "[rotation] x:1 y:0 z:0 angle:8"
+            - "[translation] x:0 y:0.024 z:0.01"
+    nose1:
+      delay: 25
+      duration: 6
+      parts:
+        nose:
+          actions:
+            - "[rotation] x:1 y:0 z:0 angle:5"
+            - "[translation] x:0 y:0.050 z:0.02"
+    nose2:
+      delay: 30
+      duration: 6
+      parts:
+        nose:
+          actions:
+            - "[rotation] x:1 y:0 z:0 angle:8"
+            - "[translation] x:0 y:0.075 z:0.04"
+    nose3:
+      delay: 35
+      duration: 5
+      parts:
+        nose:
+          actions:
+            - "[rotation] x:1 y:0 z:0 angle:8"
+            - "[translation] x:0 y:0.10 z:0.07"
+            
+  rotate_hand_cloth:
+    0:
+      delay: 50
+      duration: 15
+      parts:
+        left_arm:
+          actions:
+            - "[rotation] x:1 y:0 z:0 angle:65"
+            - "[translation] x:0 y:-0 z:0.1"
+#        right_arm:
+#          actions:
+#            - "[rotation] x:1 y:0 z:0 angle:65"
+#            - "[translation] x:0 y:-0 z:0.1"
+        cloth:
+          actions:
+            - "[rotation] x:1 y:0 z:0 angle:90"
+            - "[sound] sound:BLOCK_grindstone_use volume:0.5 pitch:1"
+  search_item:
+    0:
+      delay: 20
+      duration: 10
+      parts:
+        right_arm:
+          actions:
+            - "[rotation] x:1 y:0 z:0 angle:-25"
+            - "[translation] x:0 y:0 z:0"
+            - "[sound] sound:BLOCK_grindstone_use volume:0.2 pitch:2"
+    1:
+      delay: 30
+      duration: 5
+      parts:
+        right_arm:
+          actions:
+            - "[rotation] x:0 y:0 z:-1 angle:20"
+            - "[sound] sound:BLOCK_grindstone_use volume:0.2 pitch:2"
+            - "[temporal_part] part:item"
+        
+    2:
+      delay: 35
+      duration: 5
+      parts:
+        right_arm:
+          actions:
+            - "[rotation] x:0 y:0 z:-1 angle:-5"
+            - "[sound] sound:BLOCK_grindstone_use volume:0.2 pitch:2"
+    3:
+      delay: 40
+      duration: 5
+      parts:
+        right_arm:
+          actions:
+            - "[rotation] x:0 y:0 z:-1 angle:20"
+            - "[sound] sound:BLOCK_grindstone_use volume:0.2 pitch:1"
+    4:
+      delay: 45
+      duration: 5
+      parts:
+        right_arm:
+          actions:
+            - "[rotation] x:0 y:0 z:-1 angle:0"
+            - "[sound] sound:BLOCK_grindstone_use volume:0.2 pitch:1"
+    5:
+      delay: 50
+      duration: 15
+      parts:
+        right_arm:
+          actions:
+            - "[rotation] x:1 y:0 z:0 angle:90"
+            - "[translation] x:0 y:-0 z:0.1"
+        item:
+          actions:
+            - "[translation] x:0.2 y:0 z:-0.5"
+    6:
+      delay: 65
+      duration: 10
+      parts:
+        right_arm:
+          actions:
+            - "[rotation] x:0 y:0 z:-1 angle:50"
+            - "[sound] sound:BLOCK_grindstone_use volume:0.2 pitch:1"
+        item:
+          actions:
+            - "[translation] x:-0.12 y:0.2 z:-0.5"
+    7:
+      delay: 80
+      duration: 10
+      parts:
+        right_arm:
+          actions:
+            - "[rotation] x:0 y:0 z:1 angle:50"
+    8:
+      delay: 80
+      duration: 10
+      parts:
+        right_arm:
+          actions:
+            - "[rotation] x:0 y:1 z:0 angle:45"
+            - "[sound] sound:BLOCK_grindstone_use volume:0.2 pitch:1"
+    9:
+      delay: 90
+      duration: 10
+      parts:
+        right_arm:
+          actions:
+            - "[rotation] x:1 y:0 z:0 angle:35"
+        left_arm:
+          actions:
+            - "[rotation] x:1 y:0 z:0 angle:35"
+        cloth:
+          actions:
+            - "[rotation] x:1 y:0 z:0 angle:35"
+            - "[sound] sound:BLOCK_grindstone_use volume:0.1 pitch:1"
+        item:
+          actions:
+            - "[translation] x:-0.12 y:0.5 z:-0.5"
+            
+    10:
+      delay: 100
+      duration: 10
+      parts:
+        right_arm:
+          actions:
+            - "[rotation] x:1 y:0 z:0 angle:-80"
+        left_arm:
+          actions:
+            - "[rotation] x:1 y:0 z:0 angle:-80"
+        cloth:
+          actions:
+            - "[rotation] x:1 y:0 z:0 angle:-80"
+            - "[sound] sound:BLOCK_grindstone_use volume:0.2 pitch:1"
+        item:
+          actions:
+            - "[translation] x:-0.12 y:0.1 z:-0.5"
+    11:
+      delay: 110
+      duration: 5
+      parts:
+        right_arm:
+          actions:
+            - "[rotation] x:1 y:0 z:0 angle:90"
+        left_arm:
+          actions:
+            - "[rotation] x:1 y:0 z:0 angle:90"
+        cloth:
+          actions:
+            - "[rotation] x:1 y:0 z:0 angle:90"
+            - "[sound] sound:BLOCK_grindstone_use volume:0.2 pitch:1"
+        item:
+          actions:
+            - "[translation] x:-0.12 y:0.7 z:-0.5"
+    12:
+      delay: 113
+      duration: 0
+      parts:
+        arm:
+          actions:
+            - "[remove_part] part:item"
