@@ -41,6 +41,7 @@ public final class GiftBox extends JavaPlugin {
 
     private void initClass(){
         configManager = new ConfigManager(this);
+        configManager.loadConfig();
 
         new DefaultGenerator(this).check();
 
@@ -71,6 +72,9 @@ public final class GiftBox extends JavaPlugin {
     }
 
     public void reloadConfig(){
+        configManager = new ConfigManager(this);
+        configManager.loadConfig();
+
         new DefaultGenerator(this).check();
 
         skinsConfigManager = new SkinsConfigManager(this);

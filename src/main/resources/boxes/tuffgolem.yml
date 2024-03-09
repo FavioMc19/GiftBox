@@ -3,7 +3,7 @@
 item:
   name: "&eTuff Golem"
   material: PLAYER_HEAD
-  texture: "http://textures.minecraft.net/texture/4bf33cac5b34c0b2ea028e8479205bf648b7fe411f985cd3559b8cb1c9b215c1"
+  texture: "http://textures.minecraft.net/texture/b29203a9b873c96a93b690a862e730fa03ffd088013be23c99e6d25afc8a81a1"
   lore:
     - "&aBox example"
     - "&bAnimation example"
@@ -23,4 +23,4 @@ skin: "tuff_golem"
 # You can change the permission as you wish.
 permissions:
   enabled: false
-  permission: "giftbox.box.use.MyBox"
+  permission: "giftbox.box.use.tuff_golem"
