@@ -14,7 +14,7 @@ import java.util.Random;
 public class BoxParticle {
     private final Particle particle;
     private double range;
-    private float size;
+    private final float size;
     private double x_relative = 0;
     private double y_relative = 0;
     private double z_relative = 0;

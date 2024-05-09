@@ -179,6 +179,9 @@ public class Commands implements CommandExecutor {
             if (!sender.hasPermission("giftbox.command.give.others") && targetPlayer != null && !sender.equals(targetPlayer)) {
                 plugin.getUtils().sendMessage(sender, "&cYou don't have permission to give BoxGift to other players.");
                 return;
+            }else if(sender.equals(targetPlayer) && !sender.hasPermission("giftbox.command.give.self")){
+                plugin.getUtils().sendMessage(sender, "&cYou don't have permission to give BoxGift");
+                return;
             }
         }
 

@@ -174,6 +174,7 @@ public class Box {
     }
 
     public void forceDropItem(){
+        if(removed) return;
         Objects.requireNonNull(dropLocation.getWorld()).dropItem(dropLocation, getItemStack(0));
     }
 
@@ -256,5 +257,9 @@ public class Box {
         double verticalSpeedY = dy / time + 0.5 * 0.08 * time;
 
         return new Vector(horizontalSpeedX, verticalSpeedY, horizontalSpeedZ);
+    }
+
+    public Location getLocation(){
+        return location;
     }
 }
