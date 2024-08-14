@@ -114,6 +114,11 @@ public class Commands implements CommandExecutor {
             return;
         }
 
+        if(!sender.hasPermission("giftbox.command.give.others") && !sender.hasPermission("giftbox.command.give.self")){
+            plugin.getUtils().sendMessage(sender, "&cYou don't have permission to give BoxGift");
+            return;
+        }
+
         String boxName = arguments[1];
         BoxType boxType = plugin.getManager().getBoxType(boxName);
 

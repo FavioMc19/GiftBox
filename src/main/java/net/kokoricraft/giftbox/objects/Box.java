@@ -159,7 +159,7 @@ public class Box {
             display.remove();
         }
 
-        plugin.getManager().placed_boxes.remove(this);
+        plugin.getManager().removePlacedBox(this);
         removed = true;
     }
 

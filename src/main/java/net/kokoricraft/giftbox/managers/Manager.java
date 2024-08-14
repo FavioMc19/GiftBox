@@ -22,6 +22,7 @@ public class Manager {
     private final List<Player> editingItemColorList = new ArrayList<>();
     private Map<String, BoxType> boxes = new HashMap<>();
     public List<Box> placed_boxes = new ArrayList<>();
+    private final Map<Block, Box> placedBoxesMap = new HashMap<>();
     public Map<Player, EditItemInventory> editItemInventoryMap = new HashMap<>();
 
     public Manager(GiftBox plugin){
@@ -41,6 +42,7 @@ public class Manager {
 
         box.place(blockFace.getOppositeFace());
         placed_boxes.add(box);
+        placedBoxesMap.put(block, box);
     }
     private BukkitTask trait_task;
 
@@ -128,5 +130,14 @@ public class Manager {
     public void removeBox(String name) {
         boxes.remove(name);
         plugin.getTypeConfigManager().delete(name);
+    }
+
+    public boolean isBoxAtBlock(Block block){
+        return placedBoxesMap.containsKey(block);
+    }
+
+    public void removePlacedBox(Box box){
+        placed_boxes.remove(box);
+        placedBoxesMap.remove(box.getLocation().getBlock());
     }
 }

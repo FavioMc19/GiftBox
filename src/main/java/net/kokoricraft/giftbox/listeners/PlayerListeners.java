@@ -60,6 +60,11 @@ public class PlayerListeners implements Listener {
             return;
         }
 
+        if(plugin.getManager().isBoxAtBlock(block)){
+            //this sends message if is needed
+            return;
+        }
+
         if(itemStack.getAmount() > 1){
             itemStack.setAmount(itemStack.getAmount()-1);
         }else{
